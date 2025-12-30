@@ -141,6 +141,11 @@ def get_location_name(lat, lon):
     
     return "Unknown_Location"
 
+def remDash(name):
+    for i in range(len(name)):
+        if name[i] == '/':
+            return name[:i].strip()
+    return name.strip()
 
 def categImg(folder_path, base_output):
     """
@@ -183,7 +188,7 @@ def categImg(folder_path, base_output):
             # Grouping into folders based on location
             if lat and lon:
                 imageID = str(file_path)[5:]
-                location_name = get_location_name(lat, lon)
+                location_name = remDash(get_location_name(lat, lon))
                 testPath = base_output / year / location_name
                 if testPath.exists():
                     print(f"  -> Detected: {year} / {location_name}")
