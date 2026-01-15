@@ -1,0 +1,6 @@
+# Ignore everything by default
+*
+# Exception: Allow the .gitignore file itself
+!.gitignore
+# Exception: Allow Python files
+!*.py

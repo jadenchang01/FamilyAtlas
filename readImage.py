@@ -40,6 +40,13 @@ def moveFolder(image, source, dest):
     return
 
 
+def extractImageID(stringFilePath):
+    slash_index = stringFilePath.rfind('/')
+    if slash_index != -1:
+        return stringFilePath[slash_index+1:]
+    return stringFilePath
+
+
 def get_exif_data(image_path):
     """Reads all EXIF data from an image file."""
     try:
@@ -187,7 +194,7 @@ def categImg(folder_path):
             
             # Grouping into folders based on location
             if lat and lon:
-                imageID = str(file_path)[7:]
+                imageID = extractImageID(str(file_path))
                 location_name = remDash(get_location_name(lat, lon))
                 testPath = source_dir / year / location_name
                 if testPath.exists():
@@ -237,7 +244,7 @@ def isImportantImg(image_path):
             (mean_saturation < 30 and edge_density > 0.10)):
         return False
 
-    # 3. If passed all tests, indicate as important images
+    # 3. If passed all tests, indicate as an important image
     return True
 
 
@@ -252,10 +259,11 @@ def filterImage(basePath, goodPath, badPath):
     """
     for child in basePath.iterdir(): 
         imageID = str(child)
+        imagefileID = extractImageID(imageID)
         if isImportantImg(imageID):
-            moveFolder(imageID[5:], basePath, goodPath)
+            moveFolder(imagefileID, basePath, goodPath)
         else:
-            moveFolder(imageID[5:], basePath, badPath)
+            moveFolder(imagefileID, basePath, badPath)
     return
 
 
