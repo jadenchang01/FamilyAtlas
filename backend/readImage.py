@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import shutil
+import mimetypes
 from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
@@ -119,10 +120,10 @@ location_cache = dict()
 
 def get_location_name(lat, lon):
     """
-    Returns a city/town name for the given coordinates.
+    Returns a city/town name for Korea, or Country name for elsewhere.
     lat, lon: int, int
     """
-    # Round coordinates to 1 decimal places, method to cluster images
+    # Round coordinates to 1 decimal places to cluster images
     lat_key = round(lat, 1)
     lon_key = round(lon, 1)
     
@@ -131,19 +132,32 @@ def get_location_name(lat, lon):
 
     # If not in cache, ask the API
     try:
-        location = geolocator.reverse(f"{lat}, {lon}", timeout=5)
+        # language='en' forces English results (e.g., 'South Korea' instead of '대한민국')
+        location = geolocator.reverse(f"{lat}, {lon}", timeout=5, language='en')
+        
         if location:
             address = location.raw.get('address', {})
-            # Try to find the most relevant area name
-            area = (address.get('city') or 
-                    address.get('town') or 
-                    address.get('village') or 
-                    address.get('suburb') or 
-                    address.get('county') or 
-                    "Unknown_Location")
+            country = address.get('country', '')
+
+            # Check if the location is in Korea
+            # Nominatim usually returns "South Korea", but we check for variations just in case
+            if country in ['South Korea', 'Republic of Korea', 'Korea']:
+                # === EXISTING LOGIC FOR KOREA (City/Town/Village) ===
+                area = (address.get('city') or 
+                        address.get('town') or 
+                        address.get('village') or 
+                        address.get('suburb') or 
+                        address.get('county') or 
+                        "Unknown_Location")
+            else:
+                # === NEW LOGIC FOR ABROAD (Country Name Only) ===
+                # If country is missing (rare), fallback to Unknown
+                area = country if country else "Unknown_Location"
+
             # Save to cache
             location_cache[(lat_key, lon_key)] = area
             return area
+            
     except Exception as e:
         print(f"    ! Geocoding warning: {e}")
     
@@ -155,6 +169,32 @@ def remDash(name):
         if name[i] == '/':
             return name[:i].strip()
     return name.strip()
+
+
+def classifyFile(file_path):
+    """
+    file_path: Path object
+    returns 1 for image, 2 for video, 0 for neither
+    """
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    if mime_type and mime_type.startswith('video/'):
+        return 2
+    elif mime_type and mime_type.startswith('image/'):
+        return 1
+    return 0
+
+
+def get_file_creation_year(file_path):
+    """Returns the creation year of a file as a string."""
+    try:
+        # getctime returns a float timestamp (seconds since epoch)
+        creation_timestamp = os.path.getctime(file_path)
+        dt_object = datetime.fromtimestamp(creation_timestamp)
+        # Return just the year
+        return str(dt_object.year)
+    except Exception as e:
+        print(f"Error getting date for {file_path}: {e}")
+        return "0000_NoDate"
 
 
 def categImg(folder_path):
@@ -173,7 +213,19 @@ def categImg(folder_path):
         return
 
     for file_path in source_dir.iterdir():
-        # Skip if not an image
+        if classifyFile(file_path) == 2:
+            year = get_file_creation_year(file_path)
+            imageID = extractImageID(str(file_path))
+            testPath = source_dir / year / 'Videos'
+            if testPath.exists():
+                print(f"  -> Detected: {year} / Videos")
+                moveFolder(imageID, source_dir, testPath)
+            else:
+                print(f"  -> Making {year} / Videos")
+                target_folder = makeFolder(source_dir, year, 'Videos')
+                moveFolder(imageID, source_dir, testPath)
+            continue
+        
         if file_path.is_dir() or not file_path.suffix.lower().endswith(supported_extensions):
             continue
 
@@ -191,7 +243,7 @@ def categImg(folder_path):
                 year = date_time[:4] # Get first 4 chars (YYYY)
             # Extract Location
             lat, lon = get_lat_lon(exif_data)
-            
+            print('if it is a video you shouldnt be here')
             # Grouping into folders based on location
             if lat and lon:
                 imageID = extractImageID(str(file_path))
@@ -260,7 +312,7 @@ def filterImage(basePath, goodPath, badPath):
     for child in basePath.iterdir(): 
         imageID = str(child)
         imagefileID = extractImageID(imageID)
-        if isImportantImg(imageID):
+        if classifyFile(child) == 2 or isImportantImg(imageID):
             moveFolder(imagefileID, basePath, goodPath)
         else:
             moveFolder(imagefileID, basePath, badPath)
@@ -268,10 +320,12 @@ def filterImage(basePath, goodPath, badPath):
 
 
 # --- DEMO USAGE ---
-# basePath = Path('Temp')
-# goodPath = Path('Photos')
-# badPath = Path('NONESSENTIAL')
+# current_dir = Path.cwd()
+# parent_dir = current_dir.parent
+# basePath = parent_dir / 'Temp'
+# goodPath = parent_dir / 'Photos'
+# badPath = parent_dir / 'NONESSENTIAL'
 
 # filterImage(basePath, goodPath, badPath)
 # print(f"  -> Completed filtering. Moving to categorizing")
-# categImg('Photos')
+# categImg(goodPath)
