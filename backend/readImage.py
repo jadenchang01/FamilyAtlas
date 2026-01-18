@@ -268,10 +268,10 @@ def filterImage(basePath, goodPath, badPath):
 
 
 # --- DEMO USAGE ---
-basePath = Path('Temp')
-goodPath = Path('Photos')
-badPath = Path('NONESSENTIAL')
+# basePath = Path('Temp')
+# goodPath = Path('Photos')
+# badPath = Path('NONESSENTIAL')
 
-filterImage(basePath, goodPath, badPath)
-print(f"  -> Completed filtering. Moving to categorizing")
-categImg('Photos')
+# filterImage(basePath, goodPath, badPath)
+# print(f"  -> Completed filtering. Moving to categorizing")
+# categImg('Photos')

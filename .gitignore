@@ -1,6 +1,7 @@
-# Ignore everything by default
-*
-# Exception: Allow the .gitignore file itself
-!.gitignore
-# Exception: Allow Python files
-!*.py
+# Ignore all image directories
+Photos/
+Temp/
+NONESSENTIAL/
+
+# Exception: Ignore Python file for testing
+test.py
