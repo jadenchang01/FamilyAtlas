@@ -7,9 +7,8 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 # ============================================================================
 
 class MapBridge(QObject):
-    """Bridge for Python-JavaScript communication"""
+    """Python-JavaScript communication bridge"""
     
-    # Signals to emit to main application
     coordinates_clicked = pyqtSignal(float, float)
     pin_clicked = pyqtSignal(str)
     
@@ -35,9 +34,12 @@ class MapWidget(QWebEngineView):
     
     coordinatesClicked = pyqtSignal(float, float)
     pinSelected = pyqtSignal(str)
+    mapReady = pyqtSignal()  # NEW: Signal when map is ready
     
     def __init__(self):
         super().__init__()
+        self.is_map_ready = False  # NEW: Track if map is loaded
+        self.pending_pins = []     # NEW: Queue pins until map is ready
         self.setup_web_channel()
         self.load_map()
         
@@ -58,29 +60,66 @@ class MapWidget(QWebEngineView):
         """Load HTML page with Leaflet map"""
         html = self._generate_map_html()
         self.setHtml(html)
+        
+        # NEW: Wait for page to finish loading
+        self.loadFinished.connect(self._on_load_finished)
+    
+    def _on_load_finished(self, success):
+        """Called when page finishes loading"""
+        if success:
+            # Wait a bit more for JavaScript initialization
+            from PyQt5.QtCore import QTimer
+            QTimer.singleShot(500, self._mark_map_ready)
+    
+    def _mark_map_ready(self):
+        """Mark map as ready and add pending pins"""
+        self.is_map_ready = True
+        print(f"✓ Map ready. Adding {len(self.pending_pins)} pending pins...")
+        
+        # Add all pending pins
+        for pin_data in self.pending_pins:
+            self._add_pin_now(*pin_data)
+        
+        self.pending_pins.clear()
+        self.mapReady.emit()
     
     def add_pin(self, pin_id: str, lat: float, lng: float, title: str, photo_count: int = 0):
         """Add pin to map from Python"""
-        js = f"addPin('{pin_id}', {lat}, {lng}, '{title}', {photo_count});"
+        if self.is_map_ready:
+            # Map is ready, add immediately
+            self._add_pin_now(pin_id, lat, lng, title, photo_count)
+        else:
+            # Map not ready yet, queue for later
+            print(f"⏳ Queuing pin: {pin_id}")
+            self.pending_pins.append((pin_id, lat, lng, title, photo_count))
+    
+    def _add_pin_now(self, pin_id: str, lat: float, lng: float, title: str, photo_count: int = 0):
+        """Actually add pin to map (internal use only)"""
+        # Escape single quotes in title to prevent JS errors
+        title_escaped = title.replace("'", "\\'")
+        js = f"addPin('{pin_id}', {lat}, {lng}, '{title_escaped}', {photo_count});"
         self.page().runJavaScript(js)
     
     def remove_pin(self, pin_id: str):
         """Remove pin from map"""
-        js = f"removePin('{pin_id}');"
-        self.page().runJavaScript(js)
+        if self.is_map_ready:
+            js = f"removePin('{pin_id}');"
+            self.page().runJavaScript(js)
     
     def update_pin_count(self, pin_id: str, count: int):
         """Update photo count for pin"""
-        js = f"updatePinCount('{pin_id}', {count});"
-        self.page().runJavaScript(js)
+        if self.is_map_ready:
+            js = f"updatePinCount('{pin_id}', {count});"
+            self.page().runJavaScript(js)
     
     def center_map(self, lat: float, lng: float, zoom: int = 10):
         """Center map on coordinates"""
-        js = f"map.setView([{lat}, {lng}], {zoom});"
-        self.page().runJavaScript(js)
+        if self.is_map_ready:
+            js = f"map.setView([{lat}, {lng}], {zoom});"
+            self.page().runJavaScript(js)
     
     def _generate_map_html(self) -> str:
-        """Generate HTML with Leaflet map - matches your design colors"""
+        """Generate HTML with Leaflet map"""
         return """
 <!DOCTYPE html>
 <html>
@@ -101,7 +140,7 @@ class MapWidget(QWebEngineView):
             width: 100vw; 
         }
         .custom-popup {
-            font-family: Helvetica Neue;
+            font-family: -apple-system, "Segoe UI", sans-serif;
         }
         .custom-popup .location-name {
             font-weight: 600;
@@ -120,7 +159,7 @@ class MapWidget(QWebEngineView):
         // Initialize map
         var map = L.map('map').setView([37.7749, -122.4194], 4);
         
-        // Add tile layer - warm color scheme matching your design
+        // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
@@ -129,7 +168,7 @@ class MapWidget(QWebEngineView):
         // Store markers
         var markers = {};
         
-        // Custom marker icon matching your design
+        // Custom marker icon
         var customIcon = L.divIcon({
             className: 'custom-marker',
             html: '<div style="background: hsl(21, 66%, 68%); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
@@ -147,10 +186,14 @@ class MapWidget(QWebEngineView):
                 var lng = e.latlng.lng;
                 bridge.on_map_click(lat, lng);
             });
+            
+            console.log('Map initialized and ready');
         });
         
         // Add pin function (called from Python)
         function addPin(pinId, lat, lng, title, photoCount) {
+            console.log('Adding pin:', pinId, lat, lng, title, photoCount);
+            
             // Remove existing marker if present
             if (markers[pinId]) {
                 map.removeLayer(markers[pinId]);
@@ -158,7 +201,9 @@ class MapWidget(QWebEngineView):
             
             var marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
             
-            var popupContent = '<div class="custom-popup"><div class="location-name">' + title + '</div><div class="photo-count">' + photoCount + ' photos</div></div>';
+            var popupContent = '<div class="custom-popup"><div class="location-name">' + 
+                              title + '</div><div class="photo-count">' + 
+                              photoCount + ' photos</div></div>';
             marker.bindPopup(popupContent);
             
             marker.on('click', function() {
@@ -183,7 +228,9 @@ class MapWidget(QWebEngineView):
                     var titleMatch = content.match(/<div class="location-name">(.*?)<\\/div>/);
                     if (titleMatch) {
                         var title = titleMatch[1];
-                        var popupContent = '<div class="custom-popup"><div class="location-name">' + title + '</div><div class="photo-count">' + count + ' photos</div></div>';
+                        var popupContent = '<div class="custom-popup"><div class="location-name">' + 
+                                          title + '</div><div class="photo-count">' + 
+                                          count + ' photos</div></div>';
                         markers[pinId].setPopupContent(popupContent);
                     }
                 }

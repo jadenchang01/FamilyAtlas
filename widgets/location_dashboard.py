@@ -7,8 +7,8 @@ from datetime import datetime
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QLabel, QLineEdit, QCheckBox, QScrollArea,
-    QSplitter, QFrame, QGridLayout, QFileDialog, QMessageBox,
-    QDialog, QDialogButtonBox, QToolButton, QSizePolicy, QProgressDialog
+    QSplitter, QFrame, QGridLayout, QFileDialog, QMessageBox,QDialog,
+    QDialogButtonBox, QToolButton, QSizePolicy, QProgressDialog, QInputDialog
 )
 from PyQt5.QtCore import (
     Qt, pyqtSignal, pyqtSlot, QObject, QSize, QTimer, QThread

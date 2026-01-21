@@ -1,0 +1,106 @@
+{
+  "version": "1.0.0",
+  "saved_at": "2026-01-21T10:06:39.660466",
+  "base_path": ".",
+  "locations": {
+    "2024_Seoul": {
+      "id": "2024_Seoul",
+      "name": "Seoul (2024)",
+      "lat": 37.49964166666667,
+      "lng": 126.99260833333334,
+      "year": "2024",
+      "folder_path": "Photos/2024/Seoul",
+      "photos": [
+        {
+          "id": "IMG_7177m.jpeg",
+          "name": "IMG_7177m.jpeg",
+          "url": "Photos/2024/Seoul/IMG_7177m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 1
+    },
+    "2024_Juwangsan-myeon": {
+      "id": "2024_Juwangsan-myeon",
+      "name": "Juwangsan-myeon (2024)",
+      "lat": 36.396499999999996,
+      "lng": 129.1453861111111,
+      "year": "2024",
+      "folder_path": "Photos/2024/Juwangsan-myeon",
+      "photos": [
+        {
+          "id": "IMG_6821m.jpeg",
+          "name": "IMG_6821m.jpeg",
+          "url": "Photos/2024/Juwangsan-myeon/IMG_6821m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 1
+    },
+    "2024_Pacheon-myeon": {
+      "id": "2024_Pacheon-myeon",
+      "name": "Pacheon-myeon (2024)",
+      "lat": 36.435897222222216,
+      "lng": 129.02644444444445,
+      "year": "2024",
+      "folder_path": "Photos/2024/Pacheon-myeon",
+      "photos": [
+        {
+          "id": "IMG_6891m.jpeg",
+          "name": "IMG_6891m.jpeg",
+          "url": "Photos/2024/Pacheon-myeon/IMG_6891m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 1
+    },
+    "2023_Spain": {
+      "id": "2023_Spain",
+      "name": "Spain (2023)",
+      "lat": 40.96155277777778,
+      "lng": -5.667372222222222,
+      "year": "2023",
+      "folder_path": "Photos/2023/Spain",
+      "photos": [
+        {
+          "id": "IMG_6396m.jpeg",
+          "name": "IMG_6396m.jpeg",
+          "url": "Photos/2023/Spain/IMG_6396m.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_6463m.jpeg",
+          "name": "IMG_6463m.jpeg",
+          "url": "Photos/2023/Spain/IMG_6463m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 2
+    },
+    "2023_Portugal": {
+      "id": "2023_Portugal",
+      "name": "Portugal (2023)",
+      "lat": 38.70919166666667,
+      "lng": -9.130555555555556,
+      "year": "2023",
+      "folder_path": "Photos/2023/Portugal",
+      "photos": [
+        {
+          "id": "IMG_6219m.jpeg",
+          "name": "IMG_6219m.jpeg",
+          "url": "Photos/2023/Portugal/IMG_6219m.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_6222m.jpeg",
+          "name": "IMG_6222m.jpeg",
+          "url": "Photos/2023/Portugal/IMG_6222m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 2
+    }
+  },
+  "total_locations": 5,
+  "total_photos": 7
+}

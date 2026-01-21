@@ -243,7 +243,6 @@ def categImg(folder_path):
                 year = date_time[:4] # Get first 4 chars (YYYY)
             # Extract Location
             lat, lon = get_lat_lon(exif_data)
-            print('if it is a video you shouldnt be here')
             # Grouping into folders based on location
             if lat and lon:
                 imageID = extractImageID(str(file_path))
