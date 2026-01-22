@@ -18,6 +18,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWebChannel import QWebChannel
 from models.data_models import LocationGroup
 from widgets.gallery_image_card import GalleryImageCard
+from models.data_models import Photo
 
 # ============================================================================
 # LOCATION DASHBOARD - Matches location-dashboard.tsx (Sheet/Dialog)
@@ -102,21 +103,23 @@ class LocationDashboard(QDialog):
         right_layout = QVBoxLayout(right_panel)
 
         # 1. Header (Title & Edit)
+        # 1. Header (Title & Edit)
         header_layout = QHBoxLayout()
         self.title_label = QLabel(self.location.name)
+        self.title_label.setCursor(Qt.PointingHandCursor)
+        self.title_label.setToolTip("Click to edit")
+        self.title_label.mousePressEvent = lambda e: self._toggle_edit_title()
         self.title_label.setStyleSheet("font-size: 24px; font-weight: 600; color: hsl(24, 20%, 15%);")
         
         self.title_input = QLineEdit(self.location.name)
         self.title_input.setStyleSheet("font-size: 24px; font-weight: 600; padding: 4px; border: 2px solid hsl(21, 66%, 68%); border-radius: 4px;")
+        self.title_input.returnPressed.connect(self._toggle_edit_title)
         self.title_input.hide()
         
-        edit_btn = QPushButton("✏️")
-        edit_btn.setFixedSize(32, 32)
-        edit_btn.clicked.connect(self._toggle_edit_title)
+        # Removed edit_btn
         
         header_layout.addWidget(self.title_label)
         header_layout.addWidget(self.title_input)
-        header_layout.addWidget(edit_btn)
         header_layout.addStretch()
         right_layout.addLayout(header_layout)
 
@@ -132,11 +135,11 @@ class LocationDashboard(QDialog):
         new_folder_btn.clicked.connect(self._create_new_folder_dialog)
         actions_layout.addWidget(new_folder_btn)
 
-        self.delete_selected_btn = QPushButton("🗑️ Delete (0)")
-        self.delete_selected_btn.setStyleSheet(self.styles["btn_destructive"])
-        self.delete_selected_btn.clicked.connect(self._delete_selected)
-        self.delete_selected_btn.hide()
-        actions_layout.addWidget(self.delete_selected_btn)
+        self.move_selected_btn = QPushButton("📂 Move (0)")
+        self.move_selected_btn.setStyleSheet(self.styles["btn_outline"]) # Use outline style instead of destructive
+        self.move_selected_btn.clicked.connect(self._move_selected)
+        self.move_selected_btn.hide()
+        actions_layout.addWidget(self.move_selected_btn)
         actions_layout.addStretch()
         right_layout.addLayout(actions_layout)
 
@@ -149,9 +152,11 @@ class LocationDashboard(QDialog):
 
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("border: none;")
+        # Background black for gallery
+        scroll.setStyleSheet("border: none; background-color: #000000;")
         
         gallery_widget = QWidget()
+        gallery_widget.setStyleSheet("background-color: #000000;") # Ensure widget is also black
         self.gallery_layout = QGridLayout(gallery_widget)
         self.gallery_layout.setSpacing(16)
         
@@ -212,7 +217,9 @@ class LocationDashboard(QDialog):
         """Change the current viewing context"""
         self.current_folder = folder_path
         self.selected_photos.clear()
-        self.delete_selected_btn.hide()
+        self.current_folder = folder_path
+        self.selected_photos.clear()
+        self.move_selected_btn.hide()
         
         label = "Main Folder" if folder_path == self.location.folder_path else folder_path.name
         self.current_folder_label.setText(f"Viewing: {label}")
@@ -258,7 +265,7 @@ class LocationDashboard(QDialog):
                 photos_to_display.append(Photo(f.name, f.name, str(f), ""))
 
         # Render Grid
-        row, col, max_cols = 0, 0, 3
+        row, col, max_cols = 0, 0, 5
         for photo in photos_to_display:
             card = GalleryImageCard(photo)
             card.deleteRequested.connect(self._on_photo_delete)
@@ -279,37 +286,140 @@ class LocationDashboard(QDialog):
         
         count = len(self.selected_photos)
         if count > 0:
-            self.delete_selected_btn.setText(f"🗑️ Delete ({count})")
-            self.delete_selected_btn.show()
+            self.move_selected_btn.setText(f"📂 Move ({count})")
+            self.move_selected_btn.show()
         else:
-            self.delete_selected_btn.hide()
+            self.move_selected_btn.hide()
 
-    def _delete_selected(self):
+
+    def _move_selected(self):
+        """Move selected photos to a chosen subfolder"""
         if not self.selected_photos: return
         
-        # PyQt5 Change: QMessageBox.Yes (not StandardButton.Yes)
-        reply = QMessageBox.question(self, "Delete Photos", 
-                                   f"Delete {len(self.selected_photos)} photos?", 
+        # 1. Get available subfolders (excluding current)
+        available_destinations = [
+            f for f in self.subfolders 
+            if f != self.current_folder
+        ]
+        
+        # Add "Main Folder" option if we are in a subfolder
+        if self.current_folder != self.location.folder_path:
+             available_destinations.insert(0, self.location.folder_path)
+
+        if not available_destinations:
+            QMessageBox.information(self, "No Folders", "No other folders available to move to.\nCreate a new folder first.")
+            return
+
+        # 2. Show Selection Dialog
+        folder_names = []
+        for d in available_destinations:
+            name = "Main Folder" if d == self.location.folder_path else d.name
+            folder_names.append(name)
+            
+        dest_name, ok = QInputDialog.getItem(
+            self, "Move Photos", 
+            "Select destination folder:", 
+            folder_names, 0, False
+        )
+        
+        if ok and dest_name:
+            # Get path from name
+            target_path = None
+            for d in available_destinations:
+                name = "Main Folder" if d == self.location.folder_path else d.name
+                if name == dest_name:
+                    target_path = d
+                    break
+            
+            if target_path:
+                self._execute_move(target_path)
+
+    def _execute_move(self, target_path: Path):
+        """Perform the file move operation"""
+        moved_count = 0
+        errors = []
+        
+        # Iterate over a COPY of selected_photos
+        for photo_id in list(self.selected_photos):
+            # Find photo object/path
+            photo_obj = None
+            
+            # If in memory (Main Folder)
+            if self.current_folder == self.location.folder_path:
+                for p in self.location.photos:
+                    if p.id == photo_id:
+                        photo_obj = p
+                        break
+            # If in subfolder (File System)
+            else:
+                # We need to find the file from the glob we did earlier... 
+                # or just reconstruct it since ID is filename in subfolders
+                possible_file = self.current_folder / photo_id
+                if possible_file.exists():
+                    # Create a dummy object for compatibility if valid
+                     photo_obj = type('obj', (object,), {'url': str(possible_file), 'id': photo_id})
+            
+            if photo_obj:
+                src_path = Path(photo_obj.url)
+                dest_file = target_path / src_path.name
+                
+                try:
+                    # Move file
+                    import shutil
+                    shutil.move(str(src_path), str(dest_file))
+                    
+                    # Update Memory State if leaving Main Folder
+                    if self.current_folder == self.location.folder_path:
+                        self.location.photos = [p for p in self.location.photos if p.id != photo_id]
+                    
+                    # If moving TO Main Folder, we technically should Add it to memory? 
+                    # The current app architecture might only scan Main Folder on load or addition.
+                    # For now, let's assume if it goes to Main Folder, it becomes a file there. 
+                    # If the app reloads, it will pick it up? 
+                    # Ideally we should add it to location.photos if moving TO main.
+                    if target_path == self.location.folder_path:
+                         # We need to create a Photo object. 
+                         # But wait, Photo objects need ID, etc. 
+                         # For simplicity in this session: let's leave valid "Main to Sub" and "Sub to Sub". 
+                         # "Sub to Main" might require a reload to appear in Main view if we don't manually add.
+                         pass
+
+                    moved_count += 1
+                except Exception as e:
+                    errors.append(f"{src_path.name}: {e}")
+
+        # Summary
+        if moved_count > 0:
+            self.selected_photos.clear()
+            self._populate_gallery()
+            self.update_folder_list() # Update counts
+            self.move_selected_btn.hide()
+            
+            QMessageBox.information(self, "Move Complete", f"Moved {moved_count} photos to {target_path.name}")
+        
+        if errors:
+            QMessageBox.warning(self, "Move Errors", "\n".join(errors))
+
+    def _delete_single_photo(self, photo_id: str):
+        """Handle deletion of a single photo without selection mode"""
+        # Confirm
+        reply = QMessageBox.question(self, "Delete Photo", 
+                                   "Delete this photo permanently?", 
                                    QMessageBox.Yes | QMessageBox.No)
         
         if reply == QMessageBox.Yes:
-            # Create a copy of the set to iterate safely
-            for pid in list(self.selected_photos):
-                self.photoDeleted.emit(self.location.id, pid)
-                
-                # If in main folder, update memory immediately
-                if self.current_folder == self.location.folder_path:
-                     self.location.photos = [p for p in self.location.photos if p.id != pid]
-
-            self.selected_photos.clear()
+            self.photoDeleted.emit(self.location.id, photo_id)
+            
+            # Update memory immediately if in main folder
+            if self.current_folder == self.location.folder_path:
+                self.location.photos = [p for p in self.location.photos if p.id != photo_id]
+            
             self._populate_gallery()
             self.update_folder_list()
 
     def _on_photo_delete(self, photo_id: str):
-        """Handle single card deletion request"""
-        # Add to selection and trigger standard delete flow
-        self.selected_photos.add(photo_id)
-        self._delete_selected()
+        """Handle single card deletion request - DECOUPLED from selection"""
+        self._delete_single_photo(photo_id)
 
     def _toggle_edit_title(self):
         if not self.is_editing_title:

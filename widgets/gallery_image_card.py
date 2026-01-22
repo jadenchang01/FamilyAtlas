@@ -39,12 +39,13 @@ class GalleryImageCard(QFrame):
         self.setFrameShape(QFrame.Shape.StyledPanel)
         self.setStyleSheet("""
             GalleryImageCard {
-                background: hsl(28, 80%, 94%);
-                border: 1px solid hsl(28, 70%, 88%);
+                background: #1a1a1a;
+                border: 1px solid #333333;
                 border-radius: 8px;
             }
             GalleryImageCard:hover {
                 border: 1px solid hsl(21, 66%, 68%);
+                background: #2a2a2a;
             }
         """)
         

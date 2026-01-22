@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "saved_at": "2026-01-21T10:05:50.200411",
+  "saved_at": "2026-01-22T16:39:42.925949",
   "base_path": ".",
   "locations": {
     "2024_Seoul": {
@@ -86,21 +86,15 @@
       "folder_path": "Photos/2023/Portugal",
       "photos": [
         {
-          "id": "IMG_6219m.jpeg",
-          "name": "IMG_6219m.jpeg",
-          "url": "Photos/2023/Portugal/IMG_6219m.jpeg",
-          "hint": ""
-        },
-        {
           "id": "IMG_6222m.jpeg",
           "name": "IMG_6222m.jpeg",
           "url": "Photos/2023/Portugal/IMG_6222m.jpeg",
           "hint": ""
         }
       ],
-      "photo_count": 2
+      "photo_count": 1
     }
   },
   "total_locations": 5,
-  "total_photos": 7
+  "total_photos": 6
 }

@@ -53,11 +53,13 @@ class Sidebar(QFrame):
         logo_label.setStyleSheet("font-size: 24px;")
         header_layout.addWidget(logo_label)
         
-        title_label = QLabel("Family Atlas")
+        title_label = QLabel("FAMILY ATLAS")
         title_label.setStyleSheet("""
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 800;
             color: hsl(24, 20%, 15%);
+            letter-spacing: 2px;
+            font-family: 'Futura', 'Arial Black', sans-serif;
         """)
         header_layout.addWidget(title_label)
         header_layout.addStretch()
@@ -70,18 +72,9 @@ class Sidebar(QFrame):
         separator1.setStyleSheet("background: hsl(28, 70%, 88%);")
         layout.addWidget(separator1)
         
-        # Body - Image Uploader placeholder
-        body_label = QLabel("📤 Image Uploader")
-        body_label.setStyleSheet("""
-            font-size: 16px;
-            font-weight: 500;
-            color: hsl(24, 20%, 15%);
-            padding: 12px 8px;
-        """)
-        layout.addWidget(body_label)
         
         # Upload button
-        self.upload_btn = QPushButton("Select Photos to Process")
+        self.upload_btn = QPushButton("IMPORT PHOTOS")
         self.upload_btn.setStyleSheet("""
             QPushButton {
                 background: hsl(21, 66%, 68%);
@@ -116,22 +109,6 @@ class Sidebar(QFrame):
         separator2.setStyleSheet("background: hsl(28, 70%, 88%);")
         layout.addWidget(separator2)
         
-        logout_btn = QPushButton("🚪 Logout")
-        logout_btn.setStyleSheet("""
-            QPushButton {
-                background: transparent;
-                color: hsl(24, 20%, 15%);
-                border: none;
-                text-align: left;
-                padding: 8px;
-                font-weight: 500;
-            }
-            QPushButton:hover {
-                background: hsl(6, 100%, 90%);
-                border-radius: 4px;
-            }
-        """)
-        layout.addWidget(logout_btn)
     
     def add_location_item(self, location: LocationGroup):
         """Add location to sidebar list"""

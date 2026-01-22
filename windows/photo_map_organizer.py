@@ -106,25 +106,15 @@ class PhotoMapOrganizer(QMainWindow):
         layout = QHBoxLayout(bar)
         layout.setContentsMargins(16, 8, 16, 8)
         
-        # Sidebar trigger
-        trigger_btn = QPushButton("☰")
-        trigger_btn.setFixedSize(32, 32)
-        trigger_btn.setStyleSheet("""
-            QPushButton {
-                background: transparent;
-                border: none;
-                font-size: 20px;
-            }
-            QPushButton:hover {
-                background: hsl(6, 100%, 90%);
-                border-radius: 4px;
-            }
-        """)
-        layout.addWidget(trigger_btn)
-        
         # Title
-        title = QLabel("Photo Map")
-        title.setStyleSheet("font-size: 18px; font-weight: 600; color: hsl(24, 20%, 15%);")
+        title = QLabel("MAP")
+        title.setStyleSheet("""
+            font-size: 28px;
+            font-weight: 800;
+            color: hsl(24, 20%, 15%);
+            letter-spacing: 1px;
+            font-family: 'Arial Black', sans-serif;
+        """)
         layout.addWidget(title)
         
         layout.addStretch()
