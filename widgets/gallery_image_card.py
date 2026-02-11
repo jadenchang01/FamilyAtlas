@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import (
     Qt, pyqtSignal, pyqtSlot, QObject, QSize, QTimer, QThread
 )
-from PyQt5.QtGui import QPixmap, QIcon, QImage, QPalette, QColor
+from PyQt5.QtGui import QPixmap, QIcon, QImage, QPalette, QColor, QImageReader
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWebChannel import QWebChannel
 from models.data_models import Photo
@@ -36,6 +36,8 @@ class GalleryImageCard(QFrame):
         
     def setup_ui(self):
         """Set up card UI matching TypeScript design"""
+        self.setMinimumSize(120, 90) # Allow shrinking
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) # Allow growing
         self.setFrameShape(QFrame.Shape.StyledPanel)
         self.setStyleSheet("""
             GalleryImageCard {
@@ -44,7 +46,7 @@ class GalleryImageCard(QFrame):
                 border-radius: 8px;
             }
             GalleryImageCard:hover {
-                border: 1px solid hsl(21, 66%, 68%);
+                border: 2px solid hsl(21, 66%, 68%);
                 background: #2a2a2a;
             }
         """)
@@ -55,31 +57,33 @@ class GalleryImageCard(QFrame):
         
         # Image container
         image_container = QWidget()
-        image_container.setFixedSize(300, 225)
+        # image_container.setFixedSize(300, 225) # REMOVE FIXED SIZE
         image_layout = QVBoxLayout(image_container)
         image_layout.setContentsMargins(0, 0, 0, 0)
         
         # Image label
         self.image_label = QLabel()
         self.image_label.setScaledContents(True)
-        self.image_label.setFixedSize(300, 225)
+        # self.image_label.setFixedSize(300, 225) # REMOVE FIXED SIZE
+        self.image_label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored) # Allow full resizing
         
-        # Load image
-        pixmap = QPixmap(self.photo.url)
-        if not pixmap.isNull():
-            scaled_pixmap = pixmap.scaled(
-                300, 225, 
-                Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                Qt.TransformationMode.SmoothTransformation
-            )
-            self.image_label.setPixmap(scaled_pixmap)
+        # Load image with orientation support (EXIF)
+        reader = QImageReader(self.photo.url)
+        reader.setAutoTransform(True)
+        image = reader.read()
+        
+        if not image.isNull():
+             pixmap = QPixmap.fromImage(image)
+             # Scale initially but rely on ScaledContents for resizing
+             # We don't need to pre-scale perfectly here if ScaledContents is True
+             self.image_label.setPixmap(pixmap)
         
         image_layout.addWidget(self.image_label)
         
         # Overlay widget (shown on hover)
-        self.overlay = QWidget(image_container)
-        self.overlay.setStyleSheet("background: rgba(0, 0, 0, 0.2);")
-        self.overlay.setFixedSize(300, 225)
+        self.overlay = QWidget(self) # Parent to self, not container, to overlay easily
+        self.overlay.setStyleSheet("background: rgba(0, 0, 0, 0.4);") # Darker overlay for better visibility
+        # self.overlay.setFixedSize(300, 225) # REMOVE FIXED SIZE
         overlay_layout = QVBoxLayout(self.overlay)
         
         # Top row: checkbox and delete button
@@ -136,10 +140,15 @@ class GalleryImageCard(QFrame):
         overlay_layout.addWidget(info_label, alignment=Qt.AlignmentFlag.AlignBottom)
         
         # Position overlay over image
-        self.overlay.move(0, 0)
         self.overlay.hide()
         
         layout.addWidget(image_container)
+
+    def resizeEvent(self, event):
+        """Handle resizing of the card"""
+        self.overlay.resize(self.size())
+        self.overlay.raise_()
+        super().resizeEvent(event)
     
     def _on_selection_changed(self, state):
         """Handle checkbox state change"""

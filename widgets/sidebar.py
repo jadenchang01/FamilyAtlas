@@ -112,7 +112,7 @@ class Sidebar(QFrame):
     
     def add_location_item(self, location: LocationGroup):
         """Add location to sidebar list"""
-        item = QPushButton(f"📍 {location.name}\n   {len(location.photos)} photos")
+        item = QPushButton(f"📍 {location.name}")
         item.setStyleSheet("""
             QPushButton {
                 background: transparent;

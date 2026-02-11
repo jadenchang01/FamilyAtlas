@@ -105,6 +105,11 @@ class MapWidget(QWebEngineView):
         if self.is_map_ready:
             js = f"removePin('{pin_id}');"
             self.page().runJavaScript(js)
+
+    def clear_pins(self):
+        """Remove all pins from map"""
+        if self.is_map_ready:
+            self.page().runJavaScript("clearPins();")
     
     def update_pin_count(self, pin_id: str, count: int):
         """Update photo count for pin"""
@@ -125,7 +130,7 @@ class MapWidget(QWebEngineView):
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
@@ -134,6 +139,8 @@ class MapWidget(QWebEngineView):
             margin: 0; 
             padding: 0; 
             background: hsl(28, 80%, 96%);
+            /* Prevent touch gestures from propagating to body scale */
+            touch-action: pan-x pan-y;
         }
         #map { 
             height: 100vh; 
@@ -168,13 +175,19 @@ class MapWidget(QWebEngineView):
         // Store markers
         var markers = {};
         
-        // Custom marker icon
-        var customIcon = L.divIcon({
-            className: 'custom-marker',
-            html: '<div style="background: hsl(21, 66%, 68%); width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 15]
-        });
+        // Helper to get color scale
+        function getPinColor(count) {
+            // 1. Low: Bright Amber (High visibility against grey/blue maps)
+            if (count < 10) return 'hsl(45, 100%, 55%)';   
+            // 2. Med-Low: Safety Orange (The classic "warning" pop)
+            if (count < 50) return 'hsl(30, 100%, 50%)';   
+            // 3. Medium: Vivid Vermilion (Red-Orange)
+            if (count < 100) return 'hsl(15, 100%, 50%)';  
+            // 4. Med-High: Electric Red (Pure red, very striking)
+            if (count < 200) return 'hsl(0, 95%, 45%)';    
+            // 5. High: Deep Burgundy (Dark, intense, implies "density")
+            return 'hsl(330, 100%, 30%)';                  
+        }
         
         // Initialize Qt WebChannel
         new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -199,6 +212,16 @@ class MapWidget(QWebEngineView):
                 map.removeLayer(markers[pinId]);
             }
             
+            var color = getPinColor(photoCount);
+            
+            // Dynamic icon based on color
+            var customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '<div style="background: ' + color + '; width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+            
             var marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
             
             var popupContent = '<div class="custom-popup"><div class="location-name">' + 
@@ -220,8 +243,28 @@ class MapWidget(QWebEngineView):
             }
         }
         
+        function clearPins() {
+            for (var id in markers) {
+                if (markers.hasOwnProperty(id)) {
+                    map.removeLayer(markers[id]);
+                }
+            }
+            markers = {};
+        }
+        
         function updatePinCount(pinId, count) {
             if (markers[pinId]) {
+                var color = getPinColor(count);
+                
+                // Update Icon color
+                var newIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: '<div style="background: ' + color + '; width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+                    iconSize: [22, 22],
+                    iconAnchor: [11, 11]
+                });
+                markers[pinId].setIcon(newIcon);
+
                 var popup = markers[pinId].getPopup();
                 if (popup) {
                     var content = popup.getContent();

@@ -26,6 +26,7 @@ from widgets.map_widget import MapWidget
 from widgets.location_dashboard import LocationDashboard
 from workers.image_processing_thread import ImageProcessingThread
 from models.data_models import LocationGroup
+from backend.readImage import moveFolder, classifyFile
 
 class PhotoMapOrganizer(QMainWindow):
     
@@ -119,79 +120,25 @@ class PhotoMapOrganizer(QMainWindow):
         
         layout.addStretch()
         
-        # Save button
-        save_btn = QPushButton("💾 Save")
-        save_btn.setStyleSheet("""
+        # Sync button
+        sync_btn = QPushButton("🔄 Sync")
+        sync_btn.setStyleSheet("""
             QPushButton {
-                background: hsl(21, 66%, 68%);
-                color: hsl(24, 50%, 10%);
+                background: hsl(200, 63%, 80%);
+                color: hsl(200, 50%, 10%);
                 border: none;
                 border-radius: 6px;
                 padding: 8px 16px;
                 font-weight: 600;
             }
             QPushButton:hover {
-                background: hsl(21, 66%, 60%);
+                background: hsl(200, 63%, 70%);
             }
         """)
-        save_btn.clicked.connect(self.manual_save)
-        layout.addWidget(save_btn)
-        
-        # Load button
-        load_btn = QPushButton("📂 Load")
-        load_btn.setStyleSheet("""
-            QPushButton {
-                background: hsl(42, 63%, 80%);
-                color: hsl(24, 50%, 10%);
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: 600;
-            }
-            QPushButton:hover {
-                background: hsl(42, 63%, 70%);
-            }
-        """)
-        load_btn.clicked.connect(self.manual_load)
-        layout.addWidget(load_btn)
-        
+        sync_btn.clicked.connect(self.handle_sync)
+        layout.addWidget(sync_btn)
+
         return bar
-
-
-    def manual_save(self):
-        """Manual save triggered by button"""
-        success = self.save_progress()
-        if success:
-            QMessageBox.information(
-                self,
-                "Saved",
-                f"Progress saved successfully!\n\n"
-                f"Locations: {len(self.locations)}\n"
-                f"Photos: {sum(len(loc.photos) for loc in self.locations.values())}"
-            )    
-    
-
-    def manual_load(self):
-        """Manual load triggered by button"""
-        if len(self.locations) > 0:
-            reply = QMessageBox.question(
-                self,
-                "Load Data",
-                "Loading will replace your current session. Continue?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-            )
-            if reply != QMessageBox.StandardButton.Yes:
-                return
-        
-        success = self.load_progress()
-        if success:
-            QMessageBox.information(
-                self,
-                "Loaded",
-                f"Progress loaded successfully!\n\n"
-                f"Locations: {len(self.locations)}\n"
-                f"Photos: {sum(len(loc.photos) for loc in self.locations.values())}"
-            )
 
 
     def setup_connections(self):
@@ -266,7 +213,6 @@ class PhotoMapOrganizer(QMainWindow):
             
             # Verify version compatibility
             version = save_data.get("version", "unknown")
-            print(f"Loading save file version: {version}")
             
             # Clear existing data
             self.locations.clear()
@@ -284,9 +230,6 @@ class PhotoMapOrganizer(QMainWindow):
             total_locations = save_data.get("total_locations", 0)
             total_photos = save_data.get("total_photos", 0)
             saved_at = save_data.get("saved_at", "unknown")
-            
-            print(f"✓ Loaded: {total_locations} locations, {total_photos} photos")
-            print(f"  Last saved: {saved_at}")
             
             return True
             
@@ -339,44 +282,70 @@ class PhotoMapOrganizer(QMainWindow):
                 print("Previous session restored")
         else:
             print("Starting fresh - no previous save found")
-    
 
-    def prompt_save_on_changes(self):
-        """
-        Prompt user to save if there are unsaved changes
-        Call this before closing or major operations
-        """
-        if len(self.locations) > 0:
-            reply = QMessageBox.question(
-                self,
-                "Save Changes?",
-                "Do you want to save your current progress?",
-                QMessageBox.StandardButton.Yes | 
-                QMessageBox.StandardButton.No | 
-                QMessageBox.StandardButton.Cancel
-            )
-            
-            if reply == QMessageBox.StandardButton.Yes:
-                return self.save_progress()
-            elif reply == QMessageBox.StandardButton.Cancel:
-                return None  # Cancel the operation
-            else:
-                return True  # Continue without saving
-        return True
+
+    def handle_sync(self):
+        """Re-scan folder structure without re-filtering images"""
+        # sets syncPath to iterate through the photos folder
+        syncPath = self.base_path / 'Photos'
+        
+        # Show progress dialog
+        progress = QProgressDialog("Syncing folder structure...", "Cancel", 0, 100, self)
+        progress.setWindowTitle("Syncing")
+        progress.setWindowModality(Qt.WindowModality.WindowModal)
+        progress.show()
+        
+        # Create and start processing thread in scan_only mode
+        self.processing_thread = ImageProcessingThread(syncPath, syncPath, mode='scan_only')
+        self.processing_thread.progressUpdate.connect(
+            lambda value, msg: (progress.setValue(value), progress.setLabelText(msg))
+        )
+        self.processing_thread.processingComplete.connect(
+            lambda locations: self._on_processing_complete(locations, progress)
+        )
+        self.processing_thread.start()
 
 
     def handle_image_processing(self):
         """Handle image upload and processing - matches handleImageProcessing"""
         # Allows users to select folder to work with
-        folder = QFileDialog.getExistingDirectory(
+        sourceFolder = QFileDialog.getExistingDirectory(
             self,
             "Select Photo Folder",
             str(Path.home()),
             QFileDialog.Option.ShowDirsOnly
         )
-        if not folder:
+        if not sourceFolder:
             return
         
+        # Determine base path for portability
+        # The user selects the folder to organize (or where images are).
+        
+        # SAFETY CHECK: Ensure all files are images or videos
+        sourcePath = Path(sourceFolder)
+        try:
+             invalid_files = []
+             for item in sourcePath.iterdir():
+                 if item.name.startswith('.'): # Ignore hidden files
+                     continue
+                 
+                 file_type = classifyFile(item)
+                 if file_type == 0:
+                     invalid_files.append(item.name)
+             
+             if invalid_files:
+                 msg = "Safety Alert: This folder contains non-media files:\n\n"
+                 msg += "\n".join(invalid_files[:5])
+                 if len(invalid_files) > 5:
+                     msg += f"\n...and {len(invalid_files) - 5} others."
+                 msg += "\n\nPlease select a folder containing ONLY images or videos."
+                 
+                 QMessageBox.warning(self, "Safety Check Failed", msg)
+                 return
+        except Exception as e:
+             QMessageBox.warning(self, "Error", f"Error scanning folder: {e}")
+             return
+
         # Show progress dialog
         progress = QProgressDialog("Processing images...", "Cancel", 0, 100, self)
         progress.setWindowTitle("Processing")
@@ -384,7 +353,9 @@ class PhotoMapOrganizer(QMainWindow):
         progress.show()
         
         # Create and start processing thread
-        self.processing_thread = ImageProcessingThread(Path(folder), self.base_path)
+        # source_folder is also the base_path in this logic, or we could ask for source separately.
+        # Assuming the user selects the root folder containing unorganized images
+        self.processing_thread = ImageProcessingThread(sourcePath, self.base_path)
         self.processing_thread.progressUpdate.connect(
             lambda value, msg: (progress.setValue(value), progress.setLabelText(msg))
         )
@@ -409,6 +380,7 @@ class PhotoMapOrganizer(QMainWindow):
             self.sidebar.add_location_item(location)
         
         # Update map with pins
+        self.map_widget.clear_pins()
         for location in locations:
             if location.lat != 0.0 and location.lng != 0.0:
                 self.map_widget.add_pin(
@@ -481,11 +453,11 @@ class PhotoMapOrganizer(QMainWindow):
             print(f"Warning: Photo {photo_id} not found in location {location_id}")
             return
         
-        # Delete the actual file from disk
+        # Deletes the file from the app by moving it to NONESSENTIAL
         try:
             file_path = Path(photo_to_delete.url)
             if file_path.exists():
-                file_path.unlink()
+                moveFolder(photo_to_delete.name, file_path, 'Photos/NONESSENTIAL')
                 print(f"✓ Deleted file: {file_path}")
             else:
                 print(f"Warning: File not found: {file_path}")

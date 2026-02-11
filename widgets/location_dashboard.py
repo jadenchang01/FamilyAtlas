@@ -150,19 +150,24 @@ class LocationDashboard(QDialog):
         separator.setStyleSheet("background: hsl(28, 70%, 88%);")
         right_layout.addWidget(separator)
 
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
         # Background black for gallery
-        scroll.setStyleSheet("border: none; background-color: #000000;")
+        self.scroll.setStyleSheet("border: none; background-color: #000000;")
         
         gallery_widget = QWidget()
         gallery_widget.setStyleSheet("background-color: #000000;") # Ensure widget is also black
         self.gallery_layout = QGridLayout(gallery_widget)
         self.gallery_layout.setSpacing(16)
+        for i in range(5):
+            self.gallery_layout.setColumnStretch(i, 1)
         
         self._populate_gallery() # Initial Load
-        scroll.setWidget(gallery_widget)
-        right_layout.addWidget(scroll, stretch=1)
+        self.scroll.setWidget(gallery_widget)
+        right_layout.addWidget(self.scroll, stretch=1)
+        
+        # Initial sizing
+        QTimer.singleShot(0, self._update_gallery_row_height)
 
         # 5. Footer
         footer_layout = QHBoxLayout()
@@ -198,7 +203,7 @@ class LocationDashboard(QDialog):
 
         # 1. Main Folder Button
         is_main = (self.current_folder == self.location.folder_path)
-        main_btn = create_nav_btn(f"📁 Main Folder ({len(self.location.photos)})", is_main, 
+        main_btn = create_nav_btn(f"📁 Main Folder", is_main, 
                                   lambda: self.switch_folder(self.location.folder_path))
         self.folder_list_layout.addWidget(main_btn)
 
@@ -209,7 +214,7 @@ class LocationDashboard(QDialog):
             count = len(list(subfolder.glob("*.jpg")) + list(subfolder.glob("*.png")))
             
             # Use closure default arg (f=subfolder) to capture current value in loop
-            btn = create_nav_btn(f"  📂 {subfolder.name} ({count})", is_active, 
+            btn = create_nav_btn(f"  📂 {subfolder.name}", is_active, 
                                  lambda checked, f=subfolder: self.switch_folder(f))
             self.folder_list_layout.addWidget(btn)
 
@@ -226,6 +231,9 @@ class LocationDashboard(QDialog):
         
         self._populate_gallery()
         self.update_folder_list() # To update highlighting
+        
+        # Trigger resize to fix vertical height constraints
+        QTimer.singleShot(0, self._update_gallery_row_height)
 
     def _create_new_folder_dialog(self):
         # PyQt5: QLineEdit.Normal matches 
@@ -286,7 +294,7 @@ class LocationDashboard(QDialog):
         
         count = len(self.selected_photos)
         if count > 0:
-            self.move_selected_btn.setText(f"📂 Move ({count})")
+            self.move_selected_btn.setText(f"📂 Move Selected")
             self.move_selected_btn.show()
         else:
             self.move_selected_btn.hide()
@@ -401,21 +409,68 @@ class LocationDashboard(QDialog):
             QMessageBox.warning(self, "Move Errors", "\n".join(errors))
 
     def _delete_single_photo(self, photo_id: str):
-        """Handle deletion of a single photo without selection mode"""
+        """Handle deletion of a single photo by moving to NONESSENTIAL"""
         # Confirm
         reply = QMessageBox.question(self, "Delete Photo", 
-                                   "Delete this photo permanently?", 
+                                   "Move this photo to NONESSENTIAL folder?", 
                                    QMessageBox.Yes | QMessageBox.No)
         
         if reply == QMessageBox.Yes:
-            self.photoDeleted.emit(self.location.id, photo_id)
-            
-            # Update memory immediately if in main folder
+            # Find photo object
+            photo_to_delete = None
             if self.current_folder == self.location.folder_path:
-                self.location.photos = [p for p in self.location.photos if p.id != photo_id]
-            
-            self._populate_gallery()
-            self.update_folder_list()
+                for p in self.location.photos:
+                    if p.id == photo_id:
+                        photo_to_delete = p
+                        break
+            else:
+                possible_file = self.current_folder / photo_id
+                if possible_file.exists():
+                     photo_to_delete = type('obj', (object,), {'url': str(possible_file), 'id': photo_id})
+
+            if photo_to_delete:
+                try:
+                    src_path = Path(photo_to_delete.url)
+                    
+                    # Logic to find NONESSENTIAL folder
+                    # We assume structure: Base / Photos / Year / Location / Image
+                    # We want: Base / Photos / NONESSENTIAL / Image
+                    # So go up 3 levels from image to get 'Photos' dir? 
+                    # Or simpler: location.folder_path is .../Photos/Year/Location
+                    # Go up 2 levels from location folder
+                    
+                    if self.location.folder_path:
+                        # self.location.folder_path -> .../Photos/Year/Location
+                         photos_root = self.location.folder_path.parent.parent
+                         nonessential_dir = photos_root / "NONESSENTIAL"
+                         
+                         if not nonessential_dir.exists():
+                             # Try to create it if it doesn't exist? Or alert?
+                             # Let's try creating it to be safe, or just check 'Photos/NONESSENTIAL'
+                             nonessential_dir.mkdir(parents=True, exist_ok=True)
+
+                         dest_path = nonessential_dir / src_path.name
+                         
+                         # Handle collision
+                         if dest_path.exists():
+                             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                             dest_path = nonessential_dir / f"{src_path.stem}_{timestamp}{src_path.suffix}"
+
+                         import shutil
+                         shutil.move(str(src_path), str(dest_path))
+                         print(f"Moved {src_path.name} to NONESSENTIAL")
+                    
+                    self.photoDeleted.emit(self.location.id, photo_id)
+                    
+                    # Update memory immediately if in main folder
+                    if self.current_folder == self.location.folder_path:
+                        self.location.photos = [p for p in self.location.photos if p.id != photo_id]
+                    
+                    self._populate_gallery()
+                    self.update_folder_list()
+                    
+                except Exception as e:
+                    QMessageBox.warning(self, "Error", f"Could not move file: {e}")
 
     def _on_photo_delete(self, photo_id: str):
         """Handle single card deletion request - DECOUPLED from selection"""
@@ -435,3 +490,22 @@ class LocationDashboard(QDialog):
             self.title_label.show()
             self.is_editing_title = False
             self.locationUpdated.emit(self.location)
+
+    def resizeEvent(self, event):
+        """Handle dashboard resizing to update gallery row heights"""
+        self._update_gallery_row_height()
+        super().resizeEvent(event)
+    
+    def _update_gallery_row_height(self):
+        """Set all cards to be 1/5th of the gallery viewport height"""
+        if not hasattr(self, 'scroll') or not hasattr(self, 'gallery_layout'):
+            return
+            
+        viewport_height = self.scroll.viewport().height()
+        target_height = max(100, int(viewport_height / 5))
+        
+        # Iterate and update height for all cards
+        for i in range(self.gallery_layout.count()):
+            item = self.gallery_layout.itemAt(i)
+            if item and item.widget():
+                item.widget().setFixedHeight(target_height)

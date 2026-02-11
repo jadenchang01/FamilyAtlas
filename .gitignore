@@ -1,7 +1,6 @@
 # Ignore all image directories
 Photos/
 Temp/
-NONESSENTIAL/
 
 # Exception: Ignore Python file for testing
 test.py

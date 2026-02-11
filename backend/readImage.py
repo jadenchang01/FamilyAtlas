@@ -7,6 +7,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
+from geopy.distance import geodesic
 import cv2
 import numpy as np
 
@@ -123,6 +124,16 @@ def get_location_name(lat, lon):
     Returns a city/town name for Korea, or Country name for elsewhere.
     lat, lon: int, int
     """
+    
+    # Check if Home (within 1km radius)
+    # Provided: 37.519355555555556, 127.01368611111111
+    HOME_COORDS = (37.519355555555556, 127.01368611111111)
+    try:
+        if geodesic(HOME_COORDS, (lat, lon)).km <= 1.0:
+            return "Home"
+    except Exception:
+        pass
+
     # Round coordinates to 1 decimal places to cluster images
     lat_key = round(lat, 1)
     lon_key = round(lon, 1)
@@ -142,12 +153,8 @@ def get_location_name(lat, lon):
             # Check if the location is in Korea
             # Nominatim usually returns "South Korea", but we check for variations just in case
             if country in ['South Korea', 'Republic of Korea', 'Korea']:
-                # === EXISTING LOGIC FOR KOREA (City/Town/Village) ===
-                area = (address.get('city') or 
-                        address.get('town') or 
-                        address.get('village') or 
-                        address.get('suburb') or 
-                        address.get('county') or 
+                area = (address.get('county') or 
+                        address.get('province') or 
                         "Unknown_Location")
             else:
                 # === NEW LOGIC FOR ABROAD (Country Name Only) ===

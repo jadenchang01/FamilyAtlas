@@ -1,58 +1,803 @@
 {
   "version": "1.0.0",
-  "saved_at": "2026-01-22T16:46:02.404961",
+  "saved_at": "2026-02-11T21:02:02.158891",
   "base_path": ".",
   "locations": {
+    "2024_Jeju": {
+      "id": "2024_Jeju",
+      "name": "Jeju (2024)",
+      "lat": 33.432694444444444,
+      "lng": 126.62647222222222,
+      "year": "2024",
+      "folder_path": "Photos/2024/Jeju",
+      "photos": [
+        {
+          "id": "IMG_7330.jpeg",
+          "name": "IMG_7330.jpeg",
+          "url": "Photos/2024/Jeju/IMG_7330.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 1
+    },
     "2024_Seoul": {
       "id": "2024_Seoul",
       "name": "Seoul (2024)",
-      "lat": 37.49964166666667,
-      "lng": 126.99260833333334,
+      "lat": 37.52504444444445,
+      "lng": 127.032325,
       "year": "2024",
       "folder_path": "Photos/2024/Seoul",
       "photos": [
         {
+          "id": "IMG_8278.jpeg",
+          "name": "IMG_8278.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8278.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8215.jpeg",
+          "name": "IMG_8215.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8215.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8242.jpeg",
+          "name": "IMG_8242.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8242.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8274.jpeg",
+          "name": "IMG_8274.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8274.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8223.jpeg",
+          "name": "IMG_8223.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8223.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8258.jpeg",
+          "name": "IMG_8258.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8258.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8126.jpeg",
+          "name": "IMG_8126.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8126.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8219.jpeg",
+          "name": "IMG_8219.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8219.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8218.jpeg",
+          "name": "IMG_8218.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8218.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8222.jpeg",
+          "name": "IMG_8222.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8222.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8275.jpeg",
+          "name": "IMG_8275.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8275.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8263.jpeg",
+          "name": "IMG_8263.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8263.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8243.jpeg",
+          "name": "IMG_8243.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8243.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8255.jpeg",
+          "name": "IMG_8255.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8255.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8150.jpeg",
+          "name": "IMG_8150.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8150.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8279.jpeg",
+          "name": "IMG_8279.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8279.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8146.jpeg",
+          "name": "IMG_8146.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8146.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8280.jpeg",
+          "name": "IMG_8280.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8280.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8264.jpeg",
+          "name": "IMG_8264.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8264.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8272.jpeg",
+          "name": "IMG_8272.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8272.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8225.jpeg",
+          "name": "IMG_8225.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8225.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8161.jpeg",
+          "name": "IMG_8161.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8161.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8268.jpeg",
+          "name": "IMG_8268.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8268.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8157.jpeg",
+          "name": "IMG_8157.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8157.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8244.jpeg",
+          "name": "IMG_8244.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8244.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8245.jpeg",
+          "name": "IMG_8245.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8245.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8253.jpeg",
+          "name": "IMG_8253.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8253.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8156.jpeg",
+          "name": "IMG_8156.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8156.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8269.jpeg",
+          "name": "IMG_8269.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8269.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8160.jpeg",
+          "name": "IMG_8160.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8160.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8137.jpeg",
+          "name": "IMG_8137.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8137.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8224.jpeg",
+          "name": "IMG_8224.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8224.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8273.jpeg",
+          "name": "IMG_8273.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8273.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8265.jpeg",
+          "name": "IMG_8265.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8265.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8122.jpeg",
+          "name": "IMG_8122.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8122.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8270.jpeg",
+          "name": "IMG_8270.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8270.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8159.jpeg",
+          "name": "IMG_8159.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8159.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8266.jpeg",
+          "name": "IMG_8266.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8266.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8231.jpeg",
+          "name": "IMG_8231.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8231.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8155.jpeg",
+          "name": "IMG_8155.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8155.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8230.jpeg",
+          "name": "IMG_8230.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8230.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8267.jpeg",
+          "name": "IMG_8267.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8267.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8158.jpeg",
+          "name": "IMG_8158.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8158.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8271.jpeg",
+          "name": "IMG_8271.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8271.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8123.jpeg",
+          "name": "IMG_8123.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8123.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8162.jpeg",
+          "name": "IMG_8162.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8162.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8256.jpeg",
+          "name": "IMG_8256.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8256.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8145.jpeg",
+          "name": "IMG_8145.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8145.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8124.jpeg",
+          "name": "IMG_8124.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8124.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8276.jpeg",
+          "name": "IMG_8276.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8276.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8149.jpeg",
+          "name": "IMG_8149.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8149.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8261.jpeg",
+          "name": "IMG_8261.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8261.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8277.jpeg",
+          "name": "IMG_8277.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8277.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8109.jpeg",
+          "name": "IMG_8109.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8109.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8125.jpeg",
+          "name": "IMG_8125.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8125.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8144.jpeg",
+          "name": "IMG_8144.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8144.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8152.jpeg",
+          "name": "IMG_8152.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8152.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8257.jpeg",
+          "name": "IMG_8257.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8257.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8200.jpeg",
+          "name": "IMG_8200.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8200.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8241.jpeg",
+          "name": "IMG_8241.jpeg",
+          "url": "Photos/2024/Seoul/IMG_8241.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8116.jpeg",
+          "name": "IMG_8116.jpeg",
+          "url": "Photos/2024/Seoul/Home/IMG_8116.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8121.jpeg",
+          "name": "IMG_8121.jpeg",
+          "url": "Photos/2024/Seoul/Home/IMG_8121.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8114.jpeg",
+          "name": "IMG_8114.jpeg",
+          "url": "Photos/2024/Seoul/Home/IMG_8114.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8112.jpeg",
+          "name": "IMG_8112.jpeg",
+          "url": "Photos/2024/Seoul/Home/IMG_8112.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8110.jpeg",
+          "name": "IMG_8110.jpeg",
+          "url": "Photos/2024/Seoul/food/IMG_8110.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8254.jpeg",
+          "name": "IMG_8254.jpeg",
+          "url": "Photos/2024/Seoul/food/IMG_8254.jpeg",
+          "hint": ""
+        },
+        {
           "id": "IMG_7177m.jpeg",
           "name": "IMG_7177m.jpeg",
-          "url": "Photos/2024/Seoul/IMG_7177m.jpeg",
+          "url": "Photos/2024/Seoul/food/IMG_7177m.jpeg",
           "hint": ""
         }
       ],
-      "photo_count": 1
+      "photo_count": 67
     },
-    "2024_Juwangsan-myeon": {
-      "id": "2024_Juwangsan-myeon",
-      "name": "Juwangsan-myeon (2024)",
+    "2024_Damyang-gun": {
+      "id": "2024_Damyang-gun",
+      "name": "담양 여행",
+      "lat": 35.324172222222224,
+      "lng": 126.99115833333333,
+      "year": "2024",
+      "folder_path": "Photos/2024/Damyang-gun",
+      "photos": [
+        {
+          "id": "IMG_8192.jpeg",
+          "name": "IMG_8192.jpeg",
+          "url": "Photos/2024/Damyang-gun/IMG_8192.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8193.jpeg",
+          "name": "IMG_8193.jpeg",
+          "url": "Photos/2024/Damyang-gun/IMG_8193.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8194.jpeg",
+          "name": "IMG_8194.jpeg",
+          "url": "Photos/2024/Damyang-gun/IMG_8194.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8195.jpeg",
+          "name": "IMG_8195.jpeg",
+          "url": "Photos/2024/Damyang-gun/IMG_8195.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8191.jpeg",
+          "name": "IMG_8191.jpeg",
+          "url": "Photos/2024/Damyang-gun/IMG_8191.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8188.jpeg",
+          "name": "IMG_8188.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8188.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8189.jpeg",
+          "name": "IMG_8189.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8189.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8185.jpeg",
+          "name": "IMG_8185.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8185.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8198.jpeg",
+          "name": "IMG_8198.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8198.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8177.jpeg",
+          "name": "IMG_8177.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8177.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8199.jpeg",
+          "name": "IMG_8199.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8199.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8196.jpeg",
+          "name": "IMG_8196.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8196.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8178.jpeg",
+          "name": "IMG_8178.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8178.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8197.jpeg",
+          "name": "IMG_8197.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8197.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8186.jpeg",
+          "name": "IMG_8186.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8186.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8190.jpeg",
+          "name": "IMG_8190.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8190.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8187.jpeg",
+          "name": "IMG_8187.jpeg",
+          "url": "Photos/2024/Damyang-gun/Damyang day1/IMG_8187.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 17
+    },
+    "2024_Nonsan-si": {
+      "id": "2024_Nonsan-si",
+      "name": "Nonsan-si (2024)",
+      "lat": 36.110286111111115,
+      "lng": 127.10815555555556,
+      "year": "2024",
+      "folder_path": "Photos/2024/Nonsan-si",
+      "photos": [
+        {
+          "id": "IMG_8106.jpeg",
+          "name": "IMG_8106.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8106.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8096.jpeg",
+          "name": "IMG_8096.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8096.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8097.jpeg",
+          "name": "IMG_8097.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8097.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8107.jpeg",
+          "name": "IMG_8107.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8107.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8100.jpeg",
+          "name": "IMG_8100.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8100.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8101.jpeg",
+          "name": "IMG_8101.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8101.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8102.jpeg",
+          "name": "IMG_8102.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8102.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8103.jpeg",
+          "name": "IMG_8103.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8103.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8094.jpeg",
+          "name": "IMG_8094.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8094.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8098.jpeg",
+          "name": "IMG_8098.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8098.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8108.jpeg",
+          "name": "IMG_8108.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8108.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8099.jpeg",
+          "name": "IMG_8099.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8099.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8105.jpeg",
+          "name": "IMG_8105.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8105.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8095.jpeg",
+          "name": "IMG_8095.jpeg",
+          "url": "Photos/2024/Nonsan-si/IMG_8095.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 14
+    },
+    "2024_Cheongsong-gun": {
+      "id": "2024_Cheongsong-gun",
+      "name": "Cheongsong-gun (2024)",
       "lat": 36.396499999999996,
       "lng": 129.1453861111111,
       "year": "2024",
-      "folder_path": "Photos/2024/Juwangsan-myeon",
+      "folder_path": "Photos/2024/Cheongsong-gun",
       "photos": [
         {
           "id": "IMG_6821m.jpeg",
           "name": "IMG_6821m.jpeg",
-          "url": "Photos/2024/Juwangsan-myeon/IMG_6821m.jpeg",
+          "url": "Photos/2024/Cheongsong-gun/IMG_6821m.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_6891m.jpeg",
+          "name": "IMG_6891m.jpeg",
+          "url": "Photos/2024/Cheongsong-gun/IMG_6891m.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 2
+    },
+    "2024_Gwangju": {
+      "id": "2024_Gwangju",
+      "name": "Gwangju (2024)",
+      "lat": 35.14846111111111,
+      "lng": 126.98604722222223,
+      "year": "2024",
+      "folder_path": "Photos/2024/Gwangju",
+      "photos": [
+        {
+          "id": "IMG_8171.jpeg",
+          "name": "IMG_8171.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8171.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8167.jpeg",
+          "name": "IMG_8167.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8167.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8170.jpeg",
+          "name": "IMG_8170.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8170.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8176.jpeg",
+          "name": "IMG_8176.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8176.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8175.jpeg",
+          "name": "IMG_8175.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8175.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8174.jpeg",
+          "name": "IMG_8174.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8174.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8169.jpeg",
+          "name": "IMG_8169.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8169.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8165.jpeg",
+          "name": "IMG_8165.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8165.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8173.jpeg",
+          "name": "IMG_8173.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8173.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8172.jpeg",
+          "name": "IMG_8172.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8172.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8164.jpeg",
+          "name": "IMG_8164.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8164.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8168.jpeg",
+          "name": "IMG_8168.jpeg",
+          "url": "Photos/2024/Gwangju/IMG_8168.jpeg",
+          "hint": ""
+        }
+      ],
+      "photo_count": 12
+    },
+    "2024_Hwagae-myeon": {
+      "id": "2024_Hwagae-myeon",
+      "name": "Hwagae-myeon (2024)",
+      "lat": 35.135219444444445,
+      "lng": 127.69146666666667,
+      "year": "2024",
+      "folder_path": "Photos/2024/Hwagae-myeon",
+      "photos": [
+        {
+          "id": "IMG_7730.jpeg",
+          "name": "IMG_7730.jpeg",
+          "url": "Photos/2024/Hwagae-myeon/IMG_7730.jpeg",
           "hint": ""
         }
       ],
       "photo_count": 1
     },
-    "2024_Pacheon-myeon": {
-      "id": "2024_Pacheon-myeon",
-      "name": "Pacheon-myeon (2024)",
-      "lat": 36.435897222222216,
-      "lng": 129.02644444444445,
+    "2024_Yongin-si": {
+      "id": "2024_Yongin-si",
+      "name": "Yongin-si (2024)",
+      "lat": 37.359541666666665,
+      "lng": 127.05541944444444,
       "year": "2024",
-      "folder_path": "Photos/2024/Pacheon-myeon",
+      "folder_path": "Photos/2024/Yongin-si",
       "photos": [
         {
-          "id": "IMG_6891m.jpeg",
-          "name": "IMG_6891m.jpeg",
-          "url": "Photos/2024/Pacheon-myeon/IMG_6891m.jpeg",
+          "id": "IMG_8252.jpeg",
+          "name": "IMG_8252.jpeg",
+          "url": "Photos/2024/Yongin-si/IMG_8252.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8250.jpeg",
+          "name": "IMG_8250.jpeg",
+          "url": "Photos/2024/Yongin-si/IMG_8250.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8251.jpeg",
+          "name": "IMG_8251.jpeg",
+          "url": "Photos/2024/Yongin-si/IMG_8251.jpeg",
+          "hint": ""
+        },
+        {
+          "id": "IMG_8247.jpeg",
+          "name": "IMG_8247.jpeg",
+          "url": "Photos/2024/Yongin-si/IMG_8247.jpeg",
           "hint": ""
         }
       ],
-      "photo_count": 1
+      "photo_count": 4
     },
     "2023_Spain": {
       "id": "2023_Spain",
@@ -86,15 +831,21 @@
       "folder_path": "Photos/2023/Portugal",
       "photos": [
         {
+          "id": "IMG_6219m.jpeg",
+          "name": "IMG_6219m.jpeg",
+          "url": "Photos/2023/Portugal/IMG_6219m.jpeg",
+          "hint": ""
+        },
+        {
           "id": "IMG_6222m.jpeg",
           "name": "IMG_6222m.jpeg",
           "url": "Photos/2023/Portugal/IMG_6222m.jpeg",
           "hint": ""
         }
       ],
-      "photo_count": 1
+      "photo_count": 2
     }
   },
-  "total_locations": 5,
-  "total_photos": 6
+  "total_locations": 10,
+  "total_photos": 122
 }
