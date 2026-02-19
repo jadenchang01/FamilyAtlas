@@ -1,0 +1,13 @@
+# GUI Framework
+PyQt5>=5.15.0
+PyQtWebEngine>=5.15.0
+
+# Image Processing
+Pillow>=9.0.0
+opencv-python>=4.5.0
+
+# Geolocation
+geopy>=2.2.0
+
+# Optional: For better performance
+numpy>=1.21.0
