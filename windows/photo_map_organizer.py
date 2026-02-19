@@ -41,8 +41,15 @@ class PhotoMapOrganizer(QMainWindow):
         self.is_dashboard_open = False
         self.is_loading = False
         
-        # Base path for photo organization
-        self.base_path = Path('')
+        # Defines base path for photo organization, so we determine if running as executable (frozen) or script
+        if getattr(sys, 'frozen', False):
+            # If frozen (PyInstaller), we assume executable file is in the same level as Photos 
+            application_path = Path(sys.executable)
+        else:
+            # If dev (script), use project root (assuming inside windows/ folder)
+            application_path = Path(__file__).parent.parent
+
+        self.base_path = application_path
         
         # Save file path
         self.save_file = self.base_path / "models" / "app_data.json"
@@ -179,12 +186,15 @@ class PhotoMapOrganizer(QMainWindow):
                 backup_file = self.save_file.with_suffix('.json.backup')
                 self.save_file.rename(backup_file)
             
+            # Ensure directory exists
+            self.save_file.parent.mkdir(parents=True, exist_ok=True)
+            
             # Save new file
             with open(self.save_file, 'w', encoding='utf-8') as f:
                 json.dump(save_data, f, indent=2, ensure_ascii=False)
             
-            print(f"✓ Progress saved: {len(self.locations)} locations, "
-                  f"{save_data['total_photos']} photos")
+            # print(f"✓ Progress saved: {len(self.locations)} locations, "
+            #       f"{save_data['total_photos']} photos")
             return True
             
         except Exception as e:
@@ -277,11 +287,8 @@ class PhotoMapOrganizer(QMainWindow):
         """Automatically load saved data when app starts"""
         if self.save_file.exists():
             success = self.load_progress()
-            if success:
-                # Optional: Show notification
-                print("Previous session restored")
         else:
-            print("Starting fresh - no previous save found")
+            pass
 
 
     def handle_sync(self):
@@ -436,40 +443,14 @@ class PhotoMapOrganizer(QMainWindow):
     
 
     def handle_delete_photo(self, location_id: str, photo_id: str):
-        """Handle photo deletion"""
+        """Handle photo deletion - file has already been moved by location_dashboard.
+        This method only updates the in-memory data model and the UI."""
         if location_id not in self.locations:
             return
         
         location = self.locations[location_id]
         
-        # Find the photo object to get its file path
-        photo_to_delete = None
-        for photo in location.photos:
-            if photo.id == photo_id:
-                photo_to_delete = photo
-                break
-        
-        if photo_to_delete is None:
-            print(f"Warning: Photo {photo_id} not found in location {location_id}")
-            return
-        
-        # Deletes the file from the app by moving it to NONESSENTIAL
-        try:
-            file_path = Path(photo_to_delete.url)
-            if file_path.exists():
-                moveFolder(photo_to_delete.name, file_path, 'Photos/NONESSENTIAL')
-                print(f"✓ Deleted file: {file_path}")
-            else:
-                print(f"Warning: File not found: {file_path}")
-        except Exception as e:
-            QMessageBox.warning(
-                self,
-                "Deletion Failed",
-                f"Could not delete file:\n{photo_to_delete.url}\n\nError: {str(e)}"
-            )
-            return
-        
-        # Remove photo from location
+        # Remove photo from location (file move was already done in location_dashboard)
         location.photos = [p for p in location.photos if p.id != photo_id]
         
         # Update map pin count
@@ -483,11 +464,13 @@ class PhotoMapOrganizer(QMainWindow):
             for loc in self.locations.values():
                 self.sidebar.add_location_item(loc)
             
-            # Remove empty folder
+            # Remove empty folder (clean up macOS .DS_Store / hidden files first)
             try:
                 if location.folder_path and location.folder_path.exists():
+                    for hidden in location.folder_path.iterdir():
+                        if hidden.name.startswith('.'):
+                            hidden.unlink(missing_ok=True)
                     location.folder_path.rmdir()
-                    print(f"✓ Removed empty folder: {location.folder_path}")
             except Exception as e:
                 print(f"Note: Could not remove folder {location.folder_path}: {e}")
         
@@ -500,6 +483,6 @@ class PhotoMapOrganizer(QMainWindow):
         # Auto-save before closing
         if len(self.locations) > 0:
             self.save_progress()
-            print("Progress saved before closing")
+            # print("Progress saved before closing")
         
         event.accept()

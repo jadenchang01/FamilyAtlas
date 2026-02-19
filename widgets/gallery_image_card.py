@@ -39,17 +39,7 @@ class GalleryImageCard(QFrame):
         self.setMinimumSize(120, 90) # Allow shrinking
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding) # Allow growing
         self.setFrameShape(QFrame.Shape.StyledPanel)
-        self.setStyleSheet("""
-            GalleryImageCard {
-                background: #1a1a1a;
-                border: 1px solid #333333;
-                border-radius: 8px;
-            }
-            GalleryImageCard:hover {
-                border: 2px solid hsl(21, 66%, 68%);
-                background: #2a2a2a;
-            }
-        """)
+        self._update_style()
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -150,9 +140,37 @@ class GalleryImageCard(QFrame):
         self.overlay.raise_()
         super().resizeEvent(event)
     
+    def _update_style(self):
+        """Update card border/background to reflect selected state"""
+        if self.is_selected:
+            self.setStyleSheet("""
+                GalleryImageCard {
+                    background: #2a2a2a;
+                    border: 2px solid hsl(21, 66%, 68%);
+                    border-radius: 8px;
+                }
+                GalleryImageCard:hover {
+                    border: 2px solid hsl(21, 66%, 88%);
+                    background: #333333;
+                }
+            """)
+        else:
+            self.setStyleSheet("""
+                GalleryImageCard {
+                    background: #1a1a1a;
+                    border: 1px solid #333333;
+                    border-radius: 8px;
+                }
+                GalleryImageCard:hover {
+                    border: 2px solid hsl(21, 66%, 68%);
+                    background: #2a2a2a;
+                }
+            """)
+
     def _on_selection_changed(self, state):
         """Handle checkbox state change"""
         self.is_selected = (state == Qt.Checked)
+        self._update_style()
         self.selectionChanged.emit(self.photo.id, self.is_selected)
     
     def enterEvent(self, event):
@@ -161,6 +179,7 @@ class GalleryImageCard(QFrame):
         super().enterEvent(event)
     
     def leaveEvent(self, event):
-        """Hide overlay when not hovering"""
-        self.overlay.hide()
+        """Hide overlay only if not selected — keep visible to show checkbox state"""
+        if not self.is_selected:
+            self.overlay.hide()
         super().leaveEvent(event)

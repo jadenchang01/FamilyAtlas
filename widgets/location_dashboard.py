@@ -458,7 +458,7 @@ class LocationDashboard(QDialog):
 
                          import shutil
                          shutil.move(str(src_path), str(dest_path))
-                         print(f"Moved {src_path.name} to NONESSENTIAL")
+                        #  print(f"Moved {src_path.name} to NONESSENTIAL")
                     
                     self.photoDeleted.emit(self.location.id, photo_id)
                     

@@ -115,8 +115,12 @@ def get_lat_lon(exif_data):
 
 
 # --- Configuration ---
-# Initialize Geolocator
-geolocator = Nominatim(user_agent="photo_sorter_app")
+# Initialize Geolocator with robust SSL context for frozen apps
+import ssl
+import certifi
+
+ctx = ssl.create_default_context(cafile=certifi.where())
+geolocator = Nominatim(user_agent="photo_sorter_app", ssl_context=ctx)
 location_cache = dict()
 
 def get_location_name(lat, lon):
@@ -153,8 +157,9 @@ def get_location_name(lat, lon):
             # Check if the location is in Korea
             # Nominatim usually returns "South Korea", but we check for variations just in case
             if country in ['South Korea', 'Republic of Korea', 'Korea']:
-                area = (address.get('county') or 
-                        address.get('province') or 
+                area = (address.get('city') or 
+                        address.get('county') or 
+                        address.get('province') or  
                         "Unknown_Location")
             else:
                 # === NEW LOGIC FOR ABROAD (Country Name Only) ===
@@ -213,7 +218,7 @@ def categImg(folder_path):
     source_dir = Path(folder_path)
     supported_extensions = ('.jpg', '.jpeg', '.png')
 
-    print(f"--- Organizing photos from: '{source_dir}' ---")
+    # print(f"--- Organizing photos from: '{source_dir}' ---")
 
     if not source_dir.exists():
         print(f"Error: Source folder '{source_dir}' not found.")
@@ -225,10 +230,10 @@ def categImg(folder_path):
             imageID = extractImageID(str(file_path))
             testPath = source_dir / year / 'Videos'
             if testPath.exists():
-                print(f"  -> Detected: {year} / Videos")
+                # print(f"  -> Detected: {year} / Videos")
                 moveFolder(imageID, source_dir, testPath)
             else:
-                print(f"  -> Making {year} / Videos")
+                # print(f"  -> Making {year} / Videos")
                 target_folder = makeFolder(source_dir, year, 'Videos')
                 moveFolder(imageID, source_dir, testPath)
             continue
@@ -236,7 +241,7 @@ def categImg(folder_path):
         if file_path.is_dir() or not file_path.suffix.lower().endswith(supported_extensions):
             continue
 
-        print(f"Processing: {file_path.name}")
+        # print(f"Processing: {file_path.name}")
         
         # Get Metadata
         exif_data = get_exif_data(str(file_path))
@@ -256,7 +261,7 @@ def categImg(folder_path):
                 location_name = remDash(get_location_name(lat, lon))
                 testPath = source_dir / year / location_name
                 if testPath.exists():
-                    print(f"  -> Detected: {year} / {location_name}")
+                    # print(f"  -> Detected: {year} / {location_name}")
                     moveFolder(imageID, source_dir, testPath)
                 else:
                     target_folder = makeFolder(source_dir, year, location_name)

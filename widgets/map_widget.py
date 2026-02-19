@@ -15,13 +15,13 @@ class MapBridge(QObject):
     @pyqtSlot(float, float)
     def on_map_click(self, lat: float, lng: float):
         """Called from JavaScript when map is clicked"""
-        print(f"Map clicked: {lat}, {lng}")
+        # print(f"Map clicked: {lat}, {lng}")
         self.coordinates_clicked.emit(lat, lng)
     
     @pyqtSlot(str)
     def on_pin_click(self, pin_id: str):
         """Called from JavaScript when pin is clicked"""
-        print(f"Pin clicked: {pin_id}")
+        # print(f"Pin clicked: {pin_id}")
         self.pin_clicked.emit(pin_id)
 
 
@@ -74,7 +74,7 @@ class MapWidget(QWebEngineView):
     def _mark_map_ready(self):
         """Mark map as ready and add pending pins"""
         self.is_map_ready = True
-        print(f"✓ Map ready. Adding {len(self.pending_pins)} pending pins...")
+        # print(f"✓ Map ready. Adding {len(self.pending_pins)} pending pins...")
         
         # Add all pending pins
         for pin_data in self.pending_pins:
@@ -90,7 +90,6 @@ class MapWidget(QWebEngineView):
             self._add_pin_now(pin_id, lat, lng, title, photo_count)
         else:
             # Map not ready yet, queue for later
-            print(f"⏳ Queuing pin: {pin_id}")
             self.pending_pins.append((pin_id, lat, lng, title, photo_count))
     
     def _add_pin_now(self, pin_id: str, lat: float, lng: float, title: str, photo_count: int = 0):

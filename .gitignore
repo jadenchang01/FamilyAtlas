@@ -1,6 +1,11 @@
-# Ignore all image directories
+# Ignore all image/build directories
 Photos/
-Temp/
+Temp1/
+Temp2/
+build/
+dist/
+__pycache__/
 
-# Exception: Ignore Python file for testing
+# Exception: code files for testing
 test.py
+FamilyAtlas.spec

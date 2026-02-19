@@ -1,14 +1,14 @@
 # 🌍 Family Atlas - Photo Map Organizer
 
-Family Atlas breathes life into forgotten photo archives. It provides a desktop solution that automatically transforms thousands of disorganized images into a structured, interactive journey through time and geography.
+Family Atlas breathes life into photo archives. It provides a desktop solution that automatically transforms messy gallery into a structured, interactive recollection of family trips.
 
 
 ## 📸 What It Does
 
-Family Atlas helps you rediscover your photo memories by removing trivial images and automatically organizing the rest geographically. Simply point the app to a folder of photos, and it will:
+Family Atlas helps you rediscover your photo memories by removing trivial images and automatically organizing the rest by time and location. Simply point the app to a folder of photos, and it will:
 
-1. **Filter non-essential images** (blurry photos, screenshots, receipts)
-2. **Extract GPS coordinates** from photo EXIF data
+1. **Filter non-essential images** (blurry photos, screenshots, notes)
+2. **Extract Meta Data** from photo EXIF data
 3. **Group photos by location** (city/town level)
 4. **Organize directory by year and location** for easy navigation
 5. **Display on interactive map** with clickable pins
@@ -30,30 +30,9 @@ Family Atlas helps you rediscover your photo memories by removing trivial images
 - Grid gallery view with hover effects
 - Bulk photo selection and deletion
 - Location renaming and editing
-- Photo count tracking per location
-
-### 🎨 Modern Design
-- Clean, warm color scheme
-- Responsive sidebar navigation
-- Smooth animations and transitions
-- Cross-platform compatibility
 
 
 ## 🚀 Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- macOS, Windows, or Linux
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/family-atlas.git
-cd family-atlas
-```
-
-### Step 2: Install Dependencies
 
 **For macOS (recommended):**
 ```bash
@@ -75,63 +54,65 @@ venv\Scripts\activate
 pip install PyQt5 PyQtWebEngine pillow opencv-python geopy
 ```
 
-### Step 3: Run the Application
-
-```bash
-python main.py
-```
-
 
 ## 🏗️ Project Structure
 
 ```
 family-atlas/
-├── main.py                 # Main application entry point
-├── readImage.py            # Backend image processing logic
-├── README.md               # This file
-├── requirements.txt        # Python dependencies
-└── Photos/                 # Organized photos, the structure below is an example
-    ├── 2023/               
-        ├── Tokyo/
-        └── Paris/
-        ...
-    └── 2024/
-        └── Seoul/
-        ...
-└── NONESSENTIAL/           # Filtered out images
-├── Temp/                   # Temporary folder containing images before import
+│
+├── main.py
+│   → Application entry point that initializes Qt and launches the main window
+│
+├── models/
+│   └── data_models.py
+│       → Defines Photo and LocationGroup classes with save/load serialization
+│
+├── workers/
+│   └── image_processing_thread.py
+│       → Background thread that processes images, extracts GPS data, and organizes photos by location
+│
+├── widgets/
+│   ├── map_widget.py
+│   │   → Interactive Leaflet map with Python-JavaScript bridge for displaying location pins
+│   ├── gallery_image_card.py
+│   │   → Individual photo card widget with hover effects, selection, and delete functionality
+│   ├── location_dashboard.py
+│   │   → Modal dialog for managing photos within a location, including subfolder navigation
+│   └── sidebar.py
+│       → Collapsible navigation panel displaying location list and upload button
+│
+├── windows/
+│   └── photo_map_organizer.py
+│       → Main application window managing state, event handlers, and save/load operations
+│
+├── backend/
+│   └── readImage.py
+│       → Image processing functions for EXIF extraction, GPS parsing, and photo filtering
+│
+├── requirements.txt
+│   → Python package dependencies required to run the application
+│
+└── README.md
+│   → Project documentation with installation instructions and usage guide
+│
+└── Photos/
+|   → Organized photos, the structure below is an example
+|   ├── 2023/               
+|       ├── Tokyo/
+|       └── Paris/
+|       ...
+|   ├── 2024/
+|       └── Seoul/
+|       ...
+|   └── NONESSENTIAL/
+|   → Filtered out images
 ```
-
-
-## 🛠️ Technical Details
-
-### User Flow
-
-```
-User selects folder
-       ↓
-ImageProcessingThread starts
-       ↓
-Extract EXIF data → Get GPS → Reverse geocode → Organize files
-       ↓
-Create LocationGroup objects
-       ↓
-Update UI (map pins, sidebar, galleries)
-       ↓
-Ready for user interaction
-```
-
-### Image Filtering
-
-The app automatically filters out:
-- **Blurry images** (Laplacian variance < 100)
-- **Screenshots** (low unique color count < 2000)
-- **Documents/Receipts** (low saturation + high edge density)
 
 
 ## 🙏 References
+
 - [OpenCV](https://pypi.org/project/opencv-python/) - Image processing
-- [Pillow](https://python-pillow.org/) - Image processing II
+- [Pillow](https://python-pillow.org/) - Meta Data(EXIF) extraction
 - [GeoPy](https://geopy.readthedocs.io/) - Geocoding library
 - [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) - GUI framework
 - [Leaflet](https://leafletjs.com/) - Interactive map library
