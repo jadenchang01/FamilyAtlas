@@ -1,21 +1,11 @@
-altgraph==0.17.5
 certifi==2026.1.4
 geographiclib==2.1
 geopy==2.4.1
-macholib==1.16.4
 numpy==2.2.6
 opencv-python==4.12.0.88
-packaging==26.0
-pillow @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_59qe1phg3h/croot/pillow_1752524533185/work
-pyinstaller==6.18.0
-pyinstaller-hooks-contrib==2026.0
+pillow==11.2.1
 PyQt5==5.15.11
 PyQt5-Qt5==5.15.18
 PyQt5_sip==12.18.0
-PyQt6-Qt6==6.10.1
-PyQt6-WebEngine-Qt6==6.10.1
-PyQt6_sip==13.11.0
 PyQtWebEngine==5.15.7
 PyQtWebEngine-Qt5==5.15.18
-setuptools==78.1.1
-wheel==0.45.1
