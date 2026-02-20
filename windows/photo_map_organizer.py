@@ -44,7 +44,7 @@ class PhotoMapOrganizer(QMainWindow):
         # Defines base path for photo organization, so we determine if running as executable (frozen) or script
         if getattr(sys, 'frozen', False):
             # If frozen (PyInstaller), we assume executable file is in the same level as Photos 
-            application_path = Path(sys.executable)
+            application_path = Path(sys.executable).parent
         else:
             # If dev (script), use project root (assuming inside windows/ folder)
             application_path = Path(__file__).parent.parent
