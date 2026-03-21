@@ -1,11 +1,7 @@
 # Ignore all image/build directories
 Photos/
-Temp1/
-Temp2/
-build/
-dist/
 __pycache__/
 
-# Exception: code files for testing
+# Files for testing and models
 test.py
-FamilyAtlas.spec
+*.pkl
