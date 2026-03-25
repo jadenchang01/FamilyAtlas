@@ -10,6 +10,7 @@ from geopy.exc import GeocoderTimedOut
 from geopy.distance import geodesic
 import cv2
 import numpy as np
+import pickle
 
 
 def makeFolder(basePath, year, title):
@@ -183,7 +184,7 @@ def remDash(name):
     return name.strip()
 
 
-def classifyFile(file_path):
+def classifyFileType(file_path):
     """
     file_path: Path object
     returns 1 for image, 2 for video, 0 for neither
@@ -209,39 +210,50 @@ def get_file_creation_year(file_path):
         return "0000_NoDate"
 
 
+def classify_essential_image(image_path):
+    """Classify within essential images into category"""
+    import sys
+    from backend import imageClassifier
+    sys.modules['imageClassifier'] = imageClassifier
+    
+    # Load trained model
+    with open('classifier.pkl', 'rb') as f:
+        model = pickle.load(f)
+    
+    # Predict
+    category = model.predict(image_path)
+    return category
+
+
 def categImg(folder_path):
     """
     Scans folder from folder_path and organizes photos into Year/Location format
     folder_path: str
     """
-    # Convert strings to Path objects
+    # Convert strings to Path objects, then checks the source directory
     source_dir = Path(folder_path)
-    supported_extensions = ('.jpg', '.jpeg', '.png')
-
-    # print(f"--- Organizing photos from: '{source_dir}' ---")
-
     if not source_dir.exists():
         print(f"Error: Source folder '{source_dir}' not found.")
         return
 
+    #Iterates through individual files in given directory
     for file_path in source_dir.iterdir():
-        if classifyFile(file_path) == 2:
+        # First filters out all videos into separate folder
+        if classifyFileType(file_path) == 2:
             year = get_file_creation_year(file_path)
             imageID = extractImageID(str(file_path))
             testPath = source_dir / year / 'Videos'
             if testPath.exists():
-                # print(f"  -> Detected: {year} / Videos")
                 moveFolder(imageID, source_dir, testPath)
             else:
-                # print(f"  -> Making {year} / Videos")
                 target_folder = makeFolder(source_dir, year, 'Videos')
                 moveFolder(imageID, source_dir, testPath)
             continue
         
+        # Then, move onto sorting images
+        supported_extensions = ('.jpg', '.jpeg', '.png')
         if file_path.is_dir() or not file_path.suffix.lower().endswith(supported_extensions):
             continue
-
-        # print(f"Processing: {file_path.name}")
         
         # Get Metadata
         exif_data = get_exif_data(str(file_path))
@@ -249,22 +261,26 @@ def categImg(folder_path):
         year = "0000_NoDate"
         
         if exif_data:
-            # Extract MetaData
+            # Extract Date
             date_time = exif_data.get('DateTimeOriginal') or exif_data.get('DateTime')
             if date_time:
                 year = date_time[:4] # Get first 4 chars (YYYY)
+            
             # Extract Location
             lat, lon = get_lat_lon(exif_data)
-            # Grouping into folders based on location
+            
+            # Extract Classification of the image
+            category = classify_essential_image(str(file_path))
+
             if lat and lon:
                 imageID = extractImageID(str(file_path))
                 location_name = remDash(get_location_name(lat, lon))
-                testPath = source_dir / year / location_name
+                # Construct path where it belongs
+                testPath = source_dir / year / location_name / category
                 if testPath.exists():
-                    # print(f"  -> Detected: {year} / {location_name}")
                     moveFolder(imageID, source_dir, testPath)
                 else:
-                    target_folder = makeFolder(source_dir, year, location_name)
+                    target_folder = makeFolder(source_dir, year, f'{location_name}/{category}')
                     moveFolder(imageID, source_dir, testPath)
             else:
                 # No Location data
@@ -323,7 +339,7 @@ def filterImage(basePath, goodPath, badPath):
     for child in basePath.iterdir(): 
         imageID = str(child)
         imagefileID = extractImageID(imageID)
-        if classifyFile(child) == 2 or isImportantImg(imageID):
+        if classifyFileType(child) == 2 or isImportantImg(imageID):
             moveFolder(imagefileID, basePath, goodPath)
         else:
             moveFolder(imagefileID, basePath, badPath)

@@ -26,7 +26,7 @@ from widgets.map_widget import MapWidget
 from widgets.location_dashboard import LocationDashboard
 from workers.image_processing_thread import ImageProcessingThread
 from models.data_models import LocationGroup
-from backend.readImage import moveFolder, classifyFile
+from backend.readImage import moveFolder, classifyFileType
 
 class PhotoMapOrganizer(QMainWindow):
     
@@ -336,7 +336,7 @@ class PhotoMapOrganizer(QMainWindow):
                  if item.name.startswith('.'): # Ignore hidden files
                      continue
                  
-                 file_type = classifyFile(item)
+                 file_type = classifyFileType(item)
                  if file_type == 0:
                      invalid_files.append(item.name)
              
