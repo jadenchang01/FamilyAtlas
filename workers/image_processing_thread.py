@@ -20,7 +20,7 @@ from PyQt5.QtCore import (
 from PyQt5.QtGui import QPixmap, QIcon, QImage, QPalette, QColor
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWebChannel import QWebChannel
-from backend.readImage import categImg, filterImage, get_exif_data, get_lat_lon
+from backend.readImage import categImg, get_exif_data, get_lat_lon
 from models.data_models import Photo, LocationGroup
 
 class ImageProcessingThread(QThread):
@@ -41,23 +41,18 @@ class ImageProcessingThread(QThread):
             if self.mode == 'full':
                 self.progressUpdate.emit(10, "Filtering images...")
                 
-                #defines the good and bad path for the filtered images to be categorized
-                goodPath = self.base_path / 'Photos'
-                badPath = self.base_path / 'Photos' / 'NONESSENTIAL'
-
-                filterImage(self.source_folder, goodPath, badPath)
+                #defines the source and target path
+                source = Path(self.source_folder)
+                target = Path(self.base_path / 'Photos')
                 
-                self.progressUpdate.emit(30, "Categorizing by location...")
+                self.progressUpdate.emit(30, "Categorizing images...")
                 
-                # Use backend categImg to sort into locations
-                categImg(str(goodPath))
+                # Use backend logic to filter and sort images
+                categImg(source, target)
             
-            self.progressUpdate.emit(80, "Scanning location groups...")
+            self.progressUpdate.emit(80, "Creating pins...")
             
-            # Scan organized photos and create LocationGroup objects
-            # We scan the 'Photos' directory which should be at self.base_path / 'Photos'
-            # If mode is scan_only, we assume base_path IS the root containing 'Photos', or is 'Photos' itself?
-            # Standardizing: self.base_path is the parent of 'Photos' usually.
+            # Scan organized photos and create LocationGroup objects for organizing pins
             
             goodPath = self.base_path / 'Photos'
             if not goodPath.exists():

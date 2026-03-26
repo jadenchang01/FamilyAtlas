@@ -4,7 +4,7 @@ from imageClassifier import ImageClassifier
 
 # Point to your labeled training folders
 TRAINING_DIR = '/Users/jang-inhwa/Desktop/Training'
-CATEGORIES = ['food', 'people', 'scenery']
+CATEGORIES = ['food', 'people', 'scenery', 'others']
 
 training_images = []
 labels = []

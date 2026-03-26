@@ -210,51 +210,58 @@ def get_file_creation_year(file_path):
         return "0000_NoDate"
 
 
+_classifier_model = None
+
 def classify_essential_image(image_path):
     """Classify within essential images into category"""
-    import sys
-    from backend import imageClassifier
-    sys.modules['imageClassifier'] = imageClassifier
-    
-    # Load trained model
-    with open('classifier.pkl', 'rb') as f:
-        model = pickle.load(f)
+    global _classifier_model
+    if _classifier_model is None:
+        import sys
+        from backend import imageClassifier
+        if 'imageClassifier' not in sys.modules or sys.modules['imageClassifier'] != imageClassifier:
+            sys.modules['imageClassifier'] = imageClassifier
+        
+        # Load trained model
+        with open('classifier.pkl', 'rb') as f:
+            _classifier_model = pickle.load(f)
     
     # Predict
-    category = model.predict(image_path)
+    category = _classifier_model.predict(image_path)
     return category
 
 
-def categImg(folder_path):
+def categImg(source_dir, target_dir):
     """
     Scans folder from folder_path and organizes photos into Year/Location format
-    folder_path: str
+    source_dir: Path object
+    target_dir: Path object
     """
-    # Convert strings to Path objects, then checks the source directory
-    source_dir = Path(folder_path)
     if not source_dir.exists():
         print(f"Error: Source folder '{source_dir}' not found.")
         return
 
     #Iterates through individual files in given directory
     for file_path in source_dir.iterdir():
-        # First filters out all videos into separate folder
-        if classifyFileType(file_path) == 2:
-            year = get_file_creation_year(file_path)
-            imageID = extractImageID(str(file_path))
-            testPath = source_dir / year / 'Videos'
-            if testPath.exists():
-                moveFolder(imageID, source_dir, testPath)
-            else:
-                target_folder = makeFolder(source_dir, year, 'Videos')
-                moveFolder(imageID, source_dir, testPath)
-            continue
-        
-        # Then, move onto sorting images
         supported_extensions = ('.jpg', '.jpeg', '.png')
         if file_path.is_dir() or not file_path.suffix.lower().endswith(supported_extensions):
+            # First filters out all videos into separate folder
+            if classifyFileType(file_path) == 2:
+                year = get_file_creation_year(file_path)
+                imageID = extractImageID(str(file_path))
+                testPath = target_dir / year / 'Videos'
+                if testPath.exists():
+                    moveFolder(imageID, source_dir, testPath)
+                else:
+                    target_folder = makeFolder(target_dir, year, 'Videos')
+                    moveFolder(imageID, source_dir, testPath)
             continue
         
+        # Extract Classification of the image. We rule out the nonimportant images first before processing
+        category = classify_essential_image(str(file_path))
+        if category == "others":
+            moveFolder(extractImageID(str(file_path)), source_dir, target_dir / 'NONESSENTIAL')
+            continue
+       
         # Get Metadata
         exif_data = get_exif_data(str(file_path))
         # Default Year if metadata fails
@@ -268,19 +275,16 @@ def categImg(folder_path):
             
             # Extract Location
             lat, lon = get_lat_lon(exif_data)
-            
-            # Extract Classification of the image
-            category = classify_essential_image(str(file_path))
 
             if lat and lon:
                 imageID = extractImageID(str(file_path))
                 location_name = remDash(get_location_name(lat, lon))
                 # Construct path where it belongs
-                testPath = source_dir / year / location_name / category
+                testPath = target_dir / year / location_name / category
                 if testPath.exists():
                     moveFolder(imageID, source_dir, testPath)
                 else:
-                    target_folder = makeFolder(source_dir, year, f'{location_name}/{category}')
+                    target_folder = makeFolder(target_dir, year, f'{location_name}/{category}')
                     moveFolder(imageID, source_dir, testPath)
             else:
                 # No Location data
@@ -288,71 +292,5 @@ def categImg(folder_path):
         else:
             # No EXIF data at all
             print(f"  -> No EXIF detected for {file_path}")
-
-
-def isImportantImg(image_path):
-    """
-    Input: str
-    Reads an image located in 'image_path' and filters it into:
-    -> 'Important'
-    -> 'Nonessential' - Blurry, Screenshot/Digital, Document/Receipt
-    """
-    # 0. Load Image
-    img = cv2.imread(image_path)
-    if img is None:
-        return False
-
-    # 1. Initialize all variables required for testing
     
-    # --- FILTER 1: BLUR DETECTION (Laplacian Variance) ---
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
-    # --- FILTER 2: SCREENSHOT DETECTION (Unique Color Count) ---
-    small_img = cv2.resize(img, (100, 100), interpolation=cv2.INTER_NEAREST)
-    pixels = small_img.reshape(-1, 3)
-    unique_colors = len(np.unique(pixels, axis=0))
-    # --- FILTER 3: RECEIPT/DOCUMENT DETECTION (Saturation & Edges) ---
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    mean_saturation = hsv[:, :, 1].mean()
-    # Check Edge Density (Text creates dense edges)
-    edges = cv2.Canny(gray, 50, 150)
-    edge_density = np.count_nonzero(edges) / edges.size
-
-    # 2. Assign appropriate threshold for each filters and assess the images
-    if (blur_score < 100 or unique_colors < 2000 or 
-            (mean_saturation < 30 and edge_density > 0.10)):
-        return False
-
-    # 3. If passed all tests, indicate as an important image
-    return True
-
-
-def filterImage(basePath, goodPath, badPath):
-    """
-    basePath: Path object
-    goodPath: Path object
-    badPath: Path object
-    Reads an image located in 'image_path' and filters it into:
-    -> 'Important'
-    -> 'Nonessential' - Blurry, Screenshot/Digital, Document/Receipt
-    """
-    for child in basePath.iterdir(): 
-        imageID = str(child)
-        imagefileID = extractImageID(imageID)
-        if classifyFileType(child) == 2 or isImportantImg(imageID):
-            moveFolder(imagefileID, basePath, goodPath)
-        else:
-            moveFolder(imagefileID, basePath, badPath)
     return
-
-
-# --- DEMO USAGE ---
-# current_dir = Path.cwd()
-# parent_dir = current_dir.parent
-# basePath = parent_dir / 'Temp'
-# goodPath = parent_dir / 'Photos'
-# badPath = parent_dir / 'NONESSENTIAL'
-
-# filterImage(basePath, goodPath, badPath)
-# print(f"  -> Completed filtering. Moving to categorizing")
-# categImg(goodPath)

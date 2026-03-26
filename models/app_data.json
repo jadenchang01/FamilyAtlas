@@ -1,28 +1,16 @@
 {
   "version": "1.0.0",
-  "saved_at": "2026-03-25T14:05:19.290944",
+  "saved_at": "2026-03-26T15:00:53.256759",
   "base_path": "/Users/jang-inhwa/Desktop/FamilyAtlas",
   "locations": {
     "2024_Home": {
       "id": "2024_Home",
       "name": "Home (2024)",
-      "lat": 37.5192,
-      "lng": 127.01379444444444,
+      "lat": 37.519283333333334,
+      "lng": 127.01367222222223,
       "year": "2024",
       "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home",
       "photos": [
-        {
-          "id": "IMG_8150.jpeg",
-          "name": "IMG_8150.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/scenery/IMG_8150.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8116.jpeg",
-          "name": "IMG_8116.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/scenery/IMG_8116.jpeg",
-          "hint": ""
-        },
         {
           "id": "IMG_8157.jpeg",
           "name": "IMG_8157.jpeg",
@@ -30,178 +18,15 @@
           "hint": ""
         },
         {
-          "id": "IMG_8160.jpeg",
-          "name": "IMG_8160.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/people/IMG_8160.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8265.jpeg",
-          "name": "IMG_8265.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/people/IMG_8265.jpeg",
-          "hint": ""
-        },
-        {
           "id": "IMG_8257.jpeg",
           "name": "IMG_8257.jpeg",
           "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/food/IMG_8257.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8241.jpeg",
-          "name": "IMG_8241.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Home/food/IMG_8241.jpeg",
-          "hint": ""
-        }
-      ],
-      "photo_count": 7
-    },
-    "2024_Seoul": {
-      "id": "2024_Seoul",
-      "name": "Seoul (2024)",
-      "lat": 37.485686111111114,
-      "lng": 127.10431666666666,
-      "year": "2024",
-      "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul",
-      "photos": [
-        {
-          "id": "IMG_8242.jpeg",
-          "name": "IMG_8242.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/people/IMG_8242.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8219.jpeg",
-          "name": "IMG_8219.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/food/IMG_8219.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8230.jpeg",
-          "name": "IMG_8230.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/food/IMG_8230.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8256.jpeg",
-          "name": "IMG_8256.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/food/IMG_8256.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8261.jpeg",
-          "name": "IMG_8261.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/food/IMG_8261.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8109.jpeg",
-          "name": "IMG_8109.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Seoul/food/IMG_8109.jpeg",
-          "hint": ""
-        }
-      ],
-      "photo_count": 6
-    },
-    "2024_Damyang-gun": {
-      "id": "2024_Damyang-gun",
-      "name": "Damyang-gun (2024)",
-      "lat": 35.323638888888894,
-      "lng": 126.98914444444445,
-      "year": "2024",
-      "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Damyang-gun",
-      "photos": [
-        {
-          "id": "IMG_8188.jpeg",
-          "name": "IMG_8188.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Damyang-gun/people/IMG_8188.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8185.jpeg",
-          "name": "IMG_8185.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Damyang-gun/people/IMG_8185.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8197.jpeg",
-          "name": "IMG_8197.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Damyang-gun/people/IMG_8197.jpeg",
-          "hint": ""
-        }
-      ],
-      "photo_count": 3
-    },
-    "2024_Nonsan-si": {
-      "id": "2024_Nonsan-si",
-      "name": "Nonsan-si (2024)",
-      "lat": 36.10762777777778,
-      "lng": 127.09735833333333,
-      "year": "2024",
-      "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Nonsan-si",
-      "photos": [
-        {
-          "id": "IMG_8097.jpeg",
-          "name": "IMG_8097.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Nonsan-si/people/IMG_8097.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8107.jpeg",
-          "name": "IMG_8107.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Nonsan-si/people/IMG_8107.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8095.jpeg",
-          "name": "IMG_8095.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Nonsan-si/people/IMG_8095.jpeg",
-          "hint": ""
-        }
-      ],
-      "photo_count": 3
-    },
-    "2024_Cheongsong-gun": {
-      "id": "2024_Cheongsong-gun",
-      "name": "Cheongsong-gun (2024)",
-      "lat": 36.435897222222216,
-      "lng": 129.02644444444445,
-      "year": "2024",
-      "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Cheongsong-gun",
-      "photos": [
-        {
-          "id": "IMG_6891m.jpeg",
-          "name": "IMG_6891m.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Cheongsong-gun/food/IMG_6891m.jpeg",
-          "hint": ""
-        }
-      ],
-      "photo_count": 1
-    },
-    "2024_Gwangju": {
-      "id": "2024_Gwangju",
-      "name": "Gwangju (2024)",
-      "lat": 35.14846111111111,
-      "lng": 126.98604722222223,
-      "year": "2024",
-      "folder_path": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Gwangju",
-      "photos": [
-        {
-          "id": "IMG_8171.jpeg",
-          "name": "IMG_8171.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Gwangju/scenery/IMG_8171.jpeg",
-          "hint": ""
-        },
-        {
-          "id": "IMG_8176.jpeg",
-          "name": "IMG_8176.jpeg",
-          "url": "/Users/jang-inhwa/Desktop/FamilyAtlas/Photos/2024/Gwangju/food/IMG_8176.jpeg",
           "hint": ""
         }
       ],
       "photo_count": 2
     }
   },
-  "total_locations": 6,
-  "total_photos": 22
+  "total_locations": 1,
+  "total_photos": 2
 }
